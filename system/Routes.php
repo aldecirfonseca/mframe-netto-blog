@@ -16,13 +16,46 @@ class Routes
             $aParam     = explode("/", $aParGet);
             $controller = $aParam[0];
             $metodo     = $aParam[1];
-2
 
+            // Pega a ação a ser executa e o ID
+            if (isset($aParam[2])) {
+                if (in_array($aParam[2], ['insert', 'update', 'delete', 'view'])) {
+                    $acao   = (isset($aParam[2]) ? $aParam[2] : "");
+                    $id     = (isset($aParam[3]) ? $aParam[3] : 0);
+                } else {
+                    $acao   = (isset($aParam[2]) ? $aParam[2] : "");    
+                }
+            }
+
+            // Outros parâmetros
+            if (isset($aParam[4])) {
+                for ($rrr = 4 ; $rrr < count($aParam); $rrr++) {
+                    $outrosPar[] = $aParam[$rrr];
+                }
+            }
+
+            //
 
         } else {
             $controller = $aParGet;
         }
 
+        // Carrega o controller
+
+        if (!file_exists('app/controller/'. $controller . ".php")) {
+            $controller = "Error";
+            $metodo     = "controllerNotFound";
+        } else {
+            // carregando o controller
+            require_once 'app/controller/'. $controller . ".php";
+
+            // Verificar se não método existe no controller e direciona para controller error
+
+            if (!method_exists($controller, $metodo)) {
+                $controller = "Error";
+                $metodo     = "methodNotFound";
+            }
+        }
 
         return [
             "controller"        => $controller,
