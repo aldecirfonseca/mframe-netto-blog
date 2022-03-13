@@ -1,6 +1,8 @@
 <?php
 
-class Home
+use App\Library\ControllerMain;
+
+class Home extends ControllerMain
 {
     public function index()
     {

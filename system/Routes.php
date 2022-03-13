@@ -43,21 +43,23 @@ class Routes
         // Carrega o controller
 
         if (!file_exists('app/controller/'. $controller . ".php")) {
-            $controller = "Error";
+            $controller = "Erros";
             $metodo     = "controllerNotFound";
-        } else {
+        } 
+
+        // carregando o controller
+        require_once 'app/controller/'. $controller . ".php";
+
+        // Verificar se não método existe no controller e direciona para controller error
+
+        if (!method_exists($controller, $metodo)) {
+            $controller = "Erros";
+            $metodo     = "methodNotFound";
             // carregando o controller
             require_once 'app/controller/'. $controller . ".php";
-
-            // Verificar se não método existe no controller e direciona para controller error
-
-            if (!method_exists($controller, $metodo)) {
-                $controller = "Error";
-                $metodo     = "methodNotFound";
-            }
         }
 
-        return [
+        return new $controller([
             "controller"        => $controller,
             "metodo"            => $metodo,
             "acao"              => $acao,
@@ -66,6 +68,6 @@ class Routes
             "model"             => $controller,
             "get"               => $_GET,
             "post"              => $_POST
-        ];
+        ]);
     }
 }

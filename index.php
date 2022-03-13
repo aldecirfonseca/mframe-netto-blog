@@ -1,12 +1,16 @@
 <?php
     require_once 'app/config/config.php';
 
-    $param = Routes::rota($_GET);
+    // Instanciando a classe Autoload
+    $AutoLoad = new AutoLoad();
 
-    // cria o objeto do controller
-    $myController = new $param['controller']($param);
+    // Registrando o autoload com o spl
+    spl_autoload_register([$AutoLoad , "library"]);
+
+    // Criando o controller
+    $myController = Routes::rota($_GET);
     
     // chama o método do controller a ser executado
-    $metodo = $param['metodo'];
+    $metodo = $myController->dados['metodo'];
 
     $myController->$metodo();

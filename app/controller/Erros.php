@@ -1,6 +1,8 @@
 <?php
 
-class Error
+use App\Library\ControllerMain;
+
+class Erros extends ControllerMain
 {
     public function controllerNotFound()
     {

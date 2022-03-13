@@ -10,3 +10,4 @@ define("ROOT", __FILE__);
 // Carregamentos
 
 require_once 'system/Routes.php';       // Carrega a library do sistema de rotas
+require_once 'system/AutoLoad.php';
