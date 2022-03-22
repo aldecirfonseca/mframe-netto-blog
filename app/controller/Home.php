@@ -6,11 +6,10 @@ class Home extends ControllerMain
 {
     public function index()
     {
-        echo "Bem vindo ao controller home, método index";
-    }
-
-    public function teste()
-    {
-        echo "Carregando o controller home no método teste";
+        $this->loadView("home", [
+            "titulo" => "teste de envio de dados",
+            "ano"    => 2022,
+            "turma"  => "5 período"
+        ]);
     }
 }

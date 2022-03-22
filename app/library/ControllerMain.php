@@ -20,10 +20,10 @@ class ControllerMain
     {
         $this->dbDados = $dbDados;
 
-        if (file_exists("app/view/" . $nameView . ".php")) {
-            require_once "app/view/" . $nameView . ".php";
+        if (file_exists("app/views/" . $nameView . ".php")) {
+            require_once "app/views/" . $nameView . ".php";
         } else {
-            require_once "app/view/comuns/erros.php";
+            require_once "app/views/comuns/erros.php";
         }
     }
 }
