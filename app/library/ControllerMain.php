@@ -7,6 +7,15 @@ class ControllerMain
     public function __construct($dados)
     { 
         $this->dados = $dados;
+
+        // Criando o objeto do Model e conectando ao Database
+        $cModel = $dados['model'] . 'Model';
+
+        // verificando se o arquivo model existe para ser carregado
+        if (file_exists("app/model/" . $cModel . ".php")) {
+            require_once "app/model/" . $cModel . ".php";
+            $this->model = new $cModel(); // cria objeto model
+        }
     }
 
     /**
@@ -24,6 +33,24 @@ class ControllerMain
             require_once "app/views/" . $nameView . ".php";
         } else {
             require_once "app/views/comuns/erros.php";
+        }
+    }
+
+    /**
+     * loadModel
+     *
+     * @param string $nomeModel 
+     * @return object
+     */
+    public function loadModel($nomeModel)
+    {
+        $nomeModel .= "Model";
+
+        if (file_exists("app/model/{$nomeModel}.php")) {
+            require_once "app/model/{$nomeModel}.php";
+            return new $nomeModel();
+        } else {
+            return null;
         }
     }
 }

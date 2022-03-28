@@ -1,5 +1,8 @@
 <?php
+namespace App\Library;
 
+use PDO;
+use PDOException;
     class Database 
     {
         private static $dbDrive  = "";
@@ -12,18 +15,20 @@
         /**
          * Método construtor do banco de dados
          */
-        
-        public function __construct( $db_drive = DB_DRIVE, $db_host = DB_HOST, $db_port = DB_PORT, 
-                                        $db_user = DB_USER, $db_password = DB_PASSWORD, $db_bdados = DB_BDADOS )
-        {
-            
+        public function __construct(
+            $db_drive = DB_DRIVE, 
+            $db_host = DB_HOST, 
+            $db_port = DB_PORT, 
+            $db_user = DB_USER, 
+            $db_password = DB_PASSWORD, 
+            $db_bdados = DB_BDADOS 
+        ) {  
             self::$dbDrive  = $db_drive;
             self::$host     = $db_host;
             self::$port     = $db_port;
             self::$user     = $db_user;
             self::$password = $db_password;
-            self::$db       = $db_bdados;
-            
+            self::$db       = $db_bdados;   
         }
 
         /*Evita que a classe seja clonada*/

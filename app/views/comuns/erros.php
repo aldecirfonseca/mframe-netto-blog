@@ -1,5 +1,7 @@
 <?= $this->loadView("comuns/cabecalho") ?>
 
-<p>Página não localizada...</p>
+<div class="alert alert-danger" role="alert">
+    Página não localizada...
+</div>
 
 <?= $this->loadView("comuns/rodape") ?>

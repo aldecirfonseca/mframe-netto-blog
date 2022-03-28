@@ -12,4 +12,13 @@ class Home extends ControllerMain
             "turma"  => "5 período"
         ]);
     }
+
+    public function categoria()
+    {
+        echo "controller Home, método Categoria"; 
+
+        $CategoriaModel = $this->loadModel("Categoria");
+
+        var_dump($CategoriaModel->lista());
+    }
 }
