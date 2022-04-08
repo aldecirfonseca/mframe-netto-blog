@@ -14,4 +14,16 @@ class ModelMain
     {
         $this->db = new Database();
     }
+
+    /**
+     * getById
+     *
+     * @param integer $id 
+     * @return array
+     */
+    public function getById($id)
+    {
+        $rsc = $this->db->dbSelect("SELECT * FROM {$this->table} WHERE id = {$id}");      
+        return $this->db->dbBuscaArray($rsc);
+    }
 }
