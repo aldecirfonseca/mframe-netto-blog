@@ -53,4 +53,44 @@ class ControllerMain
             return null;
         }
     }
+
+    /**
+     * getAcao
+     *
+     * @return string
+     */
+    public function getAcao()
+    {
+        return $this->dados['acao'];
+    }
+
+    /**
+     * getController
+     *
+     * @return string
+     */
+    public function getController()
+    {
+        return $this->dados['controller'];
+    }
+
+    /**
+     * getPost
+     *
+     * @return array
+     */
+    public function getPost()
+    {
+        return $this->dados['post'];
+    }
+    
+    /**
+     * getGet
+     *
+     * @return string
+     */
+    public function getGet()
+    {
+        return $this->dados['get'];
+    }
 }
