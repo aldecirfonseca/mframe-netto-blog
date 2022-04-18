@@ -44,7 +44,33 @@ class CategoriaModel extends ModelMain
         }
     }
 
-    
+
+    /**
+     * update
+     *
+     * @param array $dados 
+     * @return boolean
+     */
+    public function update($dados) 
+    {
+        $rsc = $this->db->dbUpdate(
+                "UPDATE categoria
+                SET descricao = ?, statusRegistro = ?
+                WHERE id = ?",
+                [
+                    $dados['descricao'],
+                    $dados['statusRegistro'],
+                    $dados['id']
+                ]
+            );
+
+        if ($rsc > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * delete
      *
