@@ -25,22 +25,24 @@ echo Formulario::titulo(
 
                 <div class="form-group col-12 col-md-8">
                     <label for="descricao" class="form-label">Descrição</label>
-                    <input type="text" name="descricao" id="descricao" class="form-control" maxlength="50" value="<?= isset($dbDados['descricao']) ? $dbDados['descricao'] : "" ?>" required autofocus placeholder="Descrição da Categoria">
+                    <input type="text" name="descricao" id="descricao" class="form-control" maxlength="50" value="<?= setValue('descricao', $dbDados) ?>" required autofocus placeholder="Descrição da Categoria">
                 </div>
 
                 <div class="form-group col-12 col-md-4">
                     <label for="statusRegistro" class="form-label">Status</label>
                     <select name="statusRegistro" id="statusRegistro" class="form-control" required>
-                        <option value="" <?= isset($dbDados['statusRegistro']) ? $dbDados['statusRegistro'] == ""  ? "selected" : "" : "" ?>>.....</option>
-                        <option value="1" <?= isset($dbDados['statusRegistro']) ? $dbDados['statusRegistro'] == "1" ? "selected" : "" : "" ?>>Ativo</option>
-                        <option value="2" <?= isset($dbDados['statusRegistro']) ? $dbDados['statusRegistro'] == "2" ? "selected" : "" : "" ?>>Inativo</option>
+                        <option value=""  <?= setValue('statusRegistro', $dbDados ) == ""  ? "selected" : "" ?>>.....</option>
+                        <option value="1" <?= setValue('statusRegistro', $dbDados ) == "1" ? "selected" : "" ?>>Ativo</option>
+                        <option value="2" <?= setValue('statusRegistro', $dbDados ) == "2" ? "selected" : "" ?>>Inativo</option>
                     </select>
                 </div>
 
-                <input type="hidden" name="id" value="<?= isset($dbDados['id']) ? $dbDados['id'] : "" ?>">
+                <input type="hidden" name="id" value="<?= setValue("id", $dbDados) ?>">
 
                 <div class="form-group col-12 col-md-4">
-                    <button type="submit" value="submit" class="button button-login">Gravar</button>
+                    <?php if ($this->getAcao() != 'view'): ?>
+                        <button type="submit" value="submit" class="button button-login">Gravar</button>
+                    <?php endif; ?>
                     <a href="<?= SITEURL ?>/Categoria" class="ml-3">Voltar</a>
                 </div>
 

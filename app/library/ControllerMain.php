@@ -55,6 +55,19 @@ class ControllerMain
     }
 
     /**
+     * loadHelper
+     *
+     * @param string $nome
+     * @return void
+     */
+    public function loadHelper($nome)
+    {
+        if (file_exists("app/helper/{$nome}.php")) {
+            require_once "app/helper/{$nome}.php";
+        }
+    }
+
+    /**
      * getAcao
      *
      * @return string

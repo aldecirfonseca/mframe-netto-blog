@@ -20,22 +20,42 @@ class CategoriaModel extends ModelMain
     }
 
     /**
-     * update
+     * insert
      *
      * @param array $dados 
      * @return boolean
      */
-    public function update($dados) 
+    public function insert($dados) 
     {
-        $rsc = $this->db->dbUpdate(
-                "UPDATE categoria
-                SET descricao = ?, statusRegistro = ?
-                WHERE id = ?",
+        $rsc = $this->db->dbInsert(
+                "INSERT INTO categoria
+                (descricao, statusRegistro)
+                VALUES ( ?, ? )",
                 [
                     $dados['descricao'],
-                    $dados['statusRegistro'],
-                    $dados['id']
+                    $dados['statusRegistro']
                 ]
+            );
+
+        if ($rsc > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    
+    /**
+     * delete
+     *
+     * @param integer $id 
+     * @return boolean
+     */
+    public function delete($id) 
+    {
+        $rsc = $this->db->dbDelete(
+                "DELETE FROM categoria WHERE id = ?",
+                [$id]
             );
 
         if ($rsc > 0) {

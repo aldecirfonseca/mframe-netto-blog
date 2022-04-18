@@ -73,17 +73,15 @@ class Formulario
     {
         $texto = "";
 
-        if (isset($_SESSION['msgError'])) {
+        if (Session::get('msgError') != "") {
 
             $texto .= '
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>'. $_SESSION['msgError'] . '</strong>
+                    <strong>'. Session::getDestroy('msgError') . '</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>';
-
-            unset($_SESSION['msgError']);
 
         }
 
@@ -100,17 +98,15 @@ class Formulario
     {
         $texto = "";
 
-        if (isset($_SESSION['msgSucesso'])) {
+        if (Session::get('msgSucesso') != "") {
 
             $texto .= '
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>'. $_SESSION['msgSucesso'] . '</strong>
+                    <strong>'. Session::getDestroy('msgSucesso') . '</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>';
-            
-            unset($_SESSION["msgSucesso"]);
 
         }
 

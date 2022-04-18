@@ -13,14 +13,33 @@ class Categoria extends ControllerMain
 
     public function form()
     {
-        $aDados = [];
+        $aDados = [
+            "statusRegistro" => 1
+        ];
 
         // recuperar os dados do $id
         if ($this->getAcao() != "insert") {
             $aDados = $this->model->getById($this->dados['id']);
         }
 
+        $this->loadHelper("formulario");
         $this->loadView("admin/formCategoria", $aDados);
+    }
+
+    /**
+     * insert
+     *
+     * @return void
+     */
+    public function insert()
+    {
+        if ($this->model->insert($this->getPost())) {
+            Session::set("msgSucesso", "Registro inserido com sucesso.");
+        } else {
+            Session::set('msgError', 'Falha ao tentar inserir o registro na base de dados.');
+        }
+
+        Redirect::page("categoria");
     }
 
     /**
@@ -34,6 +53,24 @@ class Categoria extends ControllerMain
             Session::set("msgSucesso", "Registro atualizado com sucesso.");
         } else {
             Session::set('msgError', 'Falha ao tentar atualizar o registro na base de dados.');
+        }
+
+        Redirect::page("categoria");
+    }
+
+    /**
+     * delete
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $post = $this->getPost();
+
+        if ($this->model->delete($post['id'])) {
+            Session::set("msgSucesso", "Registro excluído com sucesso.");
+        } else {
+            Session::set('msgError', 'Falha ao tentar excluir o registro na base de dados.');
         }
 
         Redirect::page("categoria");
