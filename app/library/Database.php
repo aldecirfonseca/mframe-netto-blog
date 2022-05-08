@@ -84,6 +84,27 @@ use PDOException;
             $this->conexao = null;
         }
 
+        protected function getCampos(array $campos, $conector = ",")
+        {
+            $save['sql'] = "";
+            $virgula = false;
+
+            foreach ($campos as $key => $value) {
+                $juncao = " " . $conector . " ";
+
+                if (strtoupper(substr(trim($key), 0, 2)) == "OR") {
+                    $juncao = " OR ";
+                    $key    = substr(trim($key), 3);
+                }
+
+                $save['sql'] .= ($virgula ? $juncao : "" ) . "`" . $key . "` = :" . $key . " ";
+                $save['dados'][":" . $key] = $value;
+                $virgula = true;
+            }
+
+            return $save;
+        }
+
 
         /**
          * Método select que retorna um array de objetos
@@ -127,9 +148,34 @@ use PDOException;
                 
                 return $rs;
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo 'Exceção capturada: '.  $e->getMessage(); exit;
             }         
+        }
+
+        public function insert($table, $campos = [])
+        {
+            try {
+                
+                $save = $this->getCampos($campos);
+                $fields = implode("` , `", array_keys($campos));
+                $values = implode(" , ", array_keys($save['dados']));
+
+                $sql = 'INSERT INTO `' . $table . '` (`' . $fields . '`) VALUES (' . $values . ')';
+                
+                $conexao    = $this->connect();
+                $query      = $conexao->prepare($sql);
+                $query->execute($save["dados"]);
+    
+                $rs = $conexao->lastInsertId();
+    
+                self::__destruct();
+                
+            } catch (\Exception $exc) {
+                echo "Erro ao Inserir Registro, favor entrar em contato com Suporte Técnico" . $exc->getTraceAsString();
+            }
+
+            return $rs;
         }
 
         /* Método update que altera valores do banco de dados e retorna o número de linhas afetadas */
@@ -139,7 +185,7 @@ use PDOException;
                 
             $query=$this->connect()->prepare($sql);
             $query->execute($params);
-                        
+            
             $rs = $query->rowCount() or die(print_r($query->errorInfo(), true));
             self::__destruct();            
             
@@ -161,8 +207,8 @@ use PDOException;
                 $query->execute($params);
                 $rs = $query->rowCount(); 
                 
-            } catch (Exception $exc) {
-                echo "Erro ao Excluir Registro, favor entrar em contato com Suporte Tenico" . $exc->getTraceAsString();
+            } catch (\Exception $exc) {
+                echo "Erro ao Excluir Registro, favor entrar em contato com Suporte Técnico" . $exc->getTraceAsString();
             }
 
             self::__destruct();

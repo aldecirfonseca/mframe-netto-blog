@@ -27,6 +27,7 @@ class CategoriaModel extends ModelMain
      */
     public function insert($dados) 
     {
+        /*
         $rsc = $this->db->dbInsert(
                 "INSERT INTO categoria
                 (descricao, statusRegistro)
@@ -36,6 +37,15 @@ class CategoriaModel extends ModelMain
                     $dados['statusRegistro']
                 ]
             );
+        */
+
+        $rsc = $this->db->insert(
+            $this->table,
+            [
+                "descricao" => $dados['descricao'],
+                "statusRegistro" => $dados['statusRegistro']
+            ]
+        );
 
         if ($rsc > 0) {
             return true;
