@@ -129,6 +129,68 @@ use PDOException;
             
         }
         
+
+        public function query($table, $tipo = "all", array $configs = [])
+        {
+            $save['sql'] = "";
+            $save["dados"] = [];
+            $save["save"] = "";
+            $campos = "";
+
+            // select
+
+            if (!isset($configs['campos'])) {
+                $campos = "*";
+            } else {
+                $total = count($configs['campos']);
+                $i = 1;
+
+                foreach ($configs['campos'] AS $value) {
+                    $campos .= '`' . $value . '`';
+
+                    if ($i != $total) {
+                        $campos .= ", "; 
+                    }
+
+                    $i++;
+                }
+            }
+
+            // where
+
+            if (isset($configs["where"])) {
+                $ret = $this->getCampos($configs['where']);
+                $save["sql"] .=  "WHERE " . $ret['sql'];
+                $save["save"] = array_merge($ret["dados"], $save["dados"]);
+            }
+
+            // group by
+
+            if (isset($configs['groupby'])) {
+                $ret    = '';
+                $total  = count($configs['groupby']);
+                $i      = 1;
+
+                foreach ($configs['groupby'] AS $value) {
+                    $ret .= "`" . $value . "`";
+
+                    if ($i != $total) {
+                        $ret .= ", ";
+                    }
+
+                    $i++;
+                }
+
+                $save['sql'] .= "GROUP BY " . $ret;
+            }
+
+            // order by
+
+            var_dump($campos);
+            var_dump($save['sql']);
+            var_dump($save['save']);
+            exit;
+        }
         
         
         /*
@@ -153,10 +215,17 @@ use PDOException;
             }         
         }
 
+        /**
+         * insert
+         *
+         * @param string $table 
+         * @param array $campos 
+         * @return integer
+         */
         public function insert($table, $campos = [])
         {
             try {
-                
+
                 $save = $this->getCampos($campos);
                 $fields = implode("` , `", array_keys($campos));
                 $values = implode(" , ", array_keys($save['dados']));
@@ -182,15 +251,39 @@ use PDOException;
         
         public function dbUpdate( $sql , $params = null )
         {
-                
             $query=$this->connect()->prepare($sql);
             $query->execute($params);
             
             $rs = $query->rowCount() or die(print_r($query->errorInfo(), true));
             self::__destruct();            
             
+            return $rs;            
+        }
+
+        /**
+         * update
+         *
+         * @param string $table 
+         * @param array $conditions 
+         * @param array $campos 
+         * @return integer
+         */
+        public function update($table, $conditions, $campos)
+        {
+            $save       = $this->getCampos($campos);
+            $condWhere  = $this->getCampos($conditions);
+
+            $save['save'] = array_merge($save['dados'], $condWhere['dados']);
+
+            $sql = "UPDATE `" . $table . "` SET " . $save["sql"] . " WHERE " . $condWhere["sql"] . ";";
+
+            $query = $this->connect()->prepare($sql);
+            $query->execute($save["save"]);
+
+            $rs = $query->rowCount() or die(print_r($query->errorInfo(), true));
+            self::__destruct();
+
             return $rs;
-            
         }
 
         /*
@@ -198,15 +291,12 @@ use PDOException;
          */
         
         public function dbDelete($sql,$params=null)
-        {
+        {            
+            $query = $this->connect()->prepare($sql);
             
-            $query=$this->connect()->prepare($sql);
-            
-            try {
-                
+            try {                
                 $query->execute($params);
-                $rs = $query->rowCount(); 
-                
+                $rs = $query->rowCount();                 
             } catch (\Exception $exc) {
                 echo "Erro ao Excluir Registro, favor entrar em contato com Suporte Técnico" . $exc->getTraceAsString();
             }
@@ -218,10 +308,37 @@ use PDOException;
             } else {
                 return $rs;
             }
-            
-            
         }
 
+        /**
+         * delete
+         *
+         * @param string $table 
+         * @param array $conditions 
+         * @return void
+         */
+        public function delete($table, $conditions)
+        {
+            $save = $this->getCampos($conditions);
+            $sql  = "DELETE FROM {$table} WHERE " . $save['sql'] . ";";
+
+            $query = $this->connect()->prepare($sql);
+
+            try {
+                $query->execute($save['dados']);
+                $rs = $query->rowCount() or die(print_r($query->errorInfo(), true));
+            } catch (\Exception $exc) {
+                echo "Error ao excluir registro, favor entrar em contato com suporte técnico: " . $exc->getTraceAsString();
+            }
+
+            self::__destruct();
+
+            if ($rs == []) {
+                return false;
+            } else {
+                return $rs;
+            }
+        }
     
         /*
          * Método que retornar a posição atual do registro (OBJ)

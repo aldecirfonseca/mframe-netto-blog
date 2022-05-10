@@ -13,7 +13,14 @@ class CategoriaModel extends ModelMain
      */
     public function lista()
     {
-        $rsc = $this->db->dbSelect("SELECT * FROM {$this->table} ORDER BY descricao");
+        //$rsc = $this->db->dbSelect("SELECT * FROM {$this->table} ORDER BY descricao");
+        
+        $rsc = $this->db->query($this->table, "all", 
+            [
+                "campos" => ["descricao", "id"],
+                "where" => ["statusRegistro" => 1]
+            ]
+        );
         $aDados = $this->db->dbBuscaArrayAll($rsc);
 
         return $aDados;
@@ -63,6 +70,7 @@ class CategoriaModel extends ModelMain
      */
     public function update($dados) 
     {
+        /*
         $rsc = $this->db->dbUpdate(
                 "UPDATE categoria
                 SET descricao = ?, statusRegistro = ?
@@ -73,6 +81,18 @@ class CategoriaModel extends ModelMain
                     $dados['id']
                 ]
             );
+        */
+
+        $rsc = $this->db->update(
+            $this->table, 
+            [
+                "id" => $dados['id']
+            ], 
+            [
+                "descricao" => $dados["descricao"],
+                "statusRegistro" => $dados['statusRegistro']
+            ]
+        ); 
 
         if ($rsc > 0) {
             return true;
@@ -89,10 +109,14 @@ class CategoriaModel extends ModelMain
      */
     public function delete($id) 
     {
+        /*
         $rsc = $this->db->dbDelete(
                 "DELETE FROM categoria WHERE id = ?",
                 [$id]
             );
+        */
+
+        $rsc = $this->db->delete($this->table, ["id" => $id]);
 
         if ($rsc > 0) {
             return true;
