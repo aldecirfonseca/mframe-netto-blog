@@ -23,7 +23,13 @@ class ModelMain
      */
     public function getById($id)
     {
-        $rsc = $this->db->dbSelect("SELECT * FROM {$this->table} WHERE id = {$id}");      
-        return $this->db->dbBuscaArray($rsc);
+        //$rsc = $this->db->dbSelect("SELECT * FROM {$this->table} WHERE id = {$id}");      
+        //return $this->db->dbBuscaArray($rsc);
+
+        return $this->db->query(
+            $this->table,
+            'first',
+            ['where' => ["id" => $id]]
+        );
     }
 }

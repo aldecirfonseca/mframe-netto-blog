@@ -129,12 +129,19 @@ use PDOException;
             
         }
         
-
+        /**
+         * query
+         *
+         * @param string $table 
+         * @param string $tipo 
+         * @param array $configs 
+         * @return void
+         */
         public function query($table, $tipo = "all", array $configs = [])
         {
             $save['sql'] = "";
             $save["dados"] = [];
-            $save["save"] = "";
+            $save["save"] = [];
             $campos = "";
 
             // select
@@ -186,12 +193,45 @@ use PDOException;
 
             // order by
 
-            var_dump($campos);
-            var_dump($save['sql']);
-            var_dump($save['save']);
-            exit;
+            if (isset($configs['orderby'])) {
+
+                $ret = '';
+                $total = count($configs['orderby']);
+                $i = 1;
+
+                foreach ($configs['orderby'] as $v) {
+                    $ordem = '';
+
+                    if (strpos($v, ' DESC') != false){
+                        $ordem = 'DESC';
+                        $v = str_replace(' DESC', "" , $v);
+                    }
+
+                    $ret .= "`" . $v . "`" . $ordem;
+
+                    if ($i != $total) {
+                        $ret .= ", ";
+                    }
+
+                    ++$i;
+                }
+
+                $save['sql'] .= "ORDER BY " . $ret;
+            }
+
+            $sql = "SELECT " . $campos . " FROM `" . $table . "`" . $save['sql'] . ";";
+
+            $query = $this->connect()->prepare($sql, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
+            $rscDados = $query->execute($save['save']);
+
+            if ($tipo == 'first') {
+                return $this->dbBuscaArray($query);
+            } elseif ($tipo == "all") {
+                return $this->dbBuscaArrayAll($query);
+            } elseif ($tipo == "count") {
+                return $this->dbNumeroLinhas($query);
+            }
         }
-        
         
         /*
          * Método insert que insere valores no banco de dados e retorna o último id inserido

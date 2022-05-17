@@ -13,16 +13,12 @@ class CategoriaModel extends ModelMain
      */
     public function lista()
     {
-        //$rsc = $this->db->dbSelect("SELECT * FROM {$this->table} ORDER BY descricao");
-        
-        $rsc = $this->db->query($this->table, "all", 
-            [
-                "campos" => ["descricao", "id"],
-                "where" => ["statusRegistro" => 1]
-            ]
+        $aDados = $this->db->query(
+            $this->table, 
+            "all",
+            ["orderby" => ["descricao"]]
         );
-        $aDados = $this->db->dbBuscaArrayAll($rsc);
-
+        
         return $aDados;
     }
 
