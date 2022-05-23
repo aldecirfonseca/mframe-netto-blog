@@ -21,4 +21,24 @@ class Home extends ControllerMain
 
         var_dump($CategoriaModel->lista());
     }
+
+    /**
+     * login
+     *
+     * @return void
+     */
+    public function login()
+    {
+        $this->loadView("admin/login");
+    }
+
+    /**
+     * homeAdmin
+     *
+     * @return void
+     */
+    public function homeAdmin()
+    {
+        $this->loadView("admin/homeAdmin");
+    }
 }
