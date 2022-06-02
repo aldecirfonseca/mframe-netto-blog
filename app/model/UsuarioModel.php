@@ -8,6 +8,16 @@ class UsuarioModel extends ModelMain
     public $table = "usuario";
 
     /**
+     * lista
+     *
+     * @return array
+     */
+    public function lista()
+    {
+        return $this->db->query($this->table, "all", ["orderby" => ['nome']]);
+    }
+
+    /**
      * getUserEmail
      *
      * @param string $email 
@@ -62,74 +72,4 @@ class UsuarioModel extends ModelMain
 
         return 0;
     }
-
-    /**
-     * insert
-     *
-     * @param array $dados 
-     * @return boolean
-     */
-    public function insert($dados) 
-    {
-        $rsc = $this->db->insert(
-            $this->table,
-            [
-                "nome" => $dados['nome'],
-                "email" => $dados['email'],
-                "statusRegistro" => $dados['statusRegistro'],
-                "nivel" => $dados['nivel'],
-                "senha" => password_hash(trim($dados['senha']), PASSWORD_DEFAULT)
-            ]
-        );
-
-        if ($rsc > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    } 
-    
-        /**
-     * update
-     *
-     * @param array $dados 
-     * @return boolean
-     */
-    public function update($dados) 
-    {
-        $rsc = $this->db->update(
-                $this->table,
-                ["id" => $dados['id']],
-                [
-                    "nome" => $dados['nome'],
-                    "email" => $dados['email'],
-                    "statusRegistro" => $dados['statusRegistro'],
-                    "nivel" => $dados['nivel']
-                ]
-            );
-
-        if ($rsc > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * delete
-     *
-     * @param integer $id 
-     * @return boolean
-     */
-    public function delete($id) 
-    {
-        $rsc = $this->db->delete($this->table, ["id" => $id]);
-
-        if ($rsc > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 }

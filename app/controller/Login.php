@@ -69,4 +69,14 @@ class Login extends ControllerMain
         
         Redirect::Page("home");
     }
+
+    /**
+     * solicitaRecuracaoSenha
+     *
+     * @return void
+     */
+    public function solicitaRecuracaoSenha()
+    {
+        $this->loadView("admin/formEsqueceuASenha");
+    }
 }

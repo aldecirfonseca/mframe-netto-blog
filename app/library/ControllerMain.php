@@ -106,4 +106,15 @@ class ControllerMain
     {
         return $this->dados['get'];
     }
+    
+    /**
+     * getId
+     *
+     * @return void
+     */
+    public function getId()
+    {
+        $parametros = explode("/", $this->dados['get']['parametros']);
+        return isset($parametros[3]) ? $parametros[3] : null;
+    }
 }

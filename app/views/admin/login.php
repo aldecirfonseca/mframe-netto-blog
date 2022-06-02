@@ -60,7 +60,7 @@ echo $this->loadView("comuns/menu");
                         
                         <div class="col-md-12 form-group">
                             <button type="submit" value="submit" class="button button-login w-100">Entrar</button>
-                            <a href="#">Esqueceu a senha?</a>
+                            <a href="<?= SITEURL ?>Login/solicitaRecuracaoSenha">Esqueceu a senha?</a>
                         </div>
                     </form>
                 </div>

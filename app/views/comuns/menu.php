@@ -37,10 +37,10 @@
                                     <li class="nav-item submenu dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Gestão</a>
                                         <ul class="dropdown-menu">
-                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>usuario/lista">Usuário</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>categoria/lista">Categoria</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>noticia/lista">Notícia</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>sobreoAutor/lista">Sobre o Autor'</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>usuario">Usuário</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>categoria">Categoria</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>noticia">Notícia</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>sobreoAutor">Sobre o Autor'</a></li>
                                         </ul>
                                     </li>  
                                     <?php

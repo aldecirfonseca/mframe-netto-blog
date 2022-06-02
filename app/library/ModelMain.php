@@ -23,13 +23,62 @@ class ModelMain
      */
     public function getById($id)
     {
-        //$rsc = $this->db->dbSelect("SELECT * FROM {$this->table} WHERE id = {$id}");      
-        //return $this->db->dbBuscaArray($rsc);
-
         return $this->db->query(
             $this->table,
             'first',
             ['where' => ["id" => $id]]
         );
+    }
+
+    
+    /**
+     * insert
+     *
+     * @param array $dados 
+     * @return boolean
+     */
+    public function insert($dados) 
+    {
+        $rsc = $this->db->insert($this->table, $dados);
+
+        if ($rsc > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * update
+     *
+     * @param array $dados 
+     * @return boolean
+     */
+    public function update($id, $dados) 
+    {
+        $rsc = $this->db->update($this->table, ["id" => $id], $dados); 
+
+        if ($rsc > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * delete
+     *
+     * @param integer $id 
+     * @return boolean
+     */
+    public function delete($id) 
+    {
+        $rsc = $this->db->delete($this->table, ["id" => $id]);
+
+        if ($rsc > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

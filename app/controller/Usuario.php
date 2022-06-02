@@ -1,16 +1,26 @@
 <?php
 
 use App\Library\ControllerMain;
-use App\Library\Redirect;
 use App\Library\Session;
+use App\Library\Redirect;
 
-class Categoria extends ControllerMain
+class Usuario extends ControllerMain
 {
+    /**
+     * index
+     *
+     * @return void
+     */
     public function index()
     {
-        $this->loadView("admin/listaCategoria", $this->model->lista());
+        $this->loadView("admin/listaUsuario", $this->model->lista());
     }
 
+    /**
+     * form
+     *
+     * @return void
+     */
     public function form()
     {
         $aDados = [
@@ -23,7 +33,7 @@ class Categoria extends ControllerMain
         }
 
         $this->loadHelper("formulario");
-        $this->loadView("admin/formCategoria", $aDados);
+        $this->loadView("admin/formUsuario", $aDados);
     }
 
     /**
@@ -36,15 +46,18 @@ class Categoria extends ControllerMain
         $post = $this->getPost();
 
         if ($this->model->insert([
-                "descricao" => $post['descricao'],
-                "statusRegistro" => $post['statusRegistro']
+            "nome" => $post['nome'],
+            "email" => $post['email'],
+            "statusRegistro" => $post['statusRegistro'],
+            "nivel" => $post['nivel'],
+            "senha" => password_hash(trim($post['senha']), PASSWORD_DEFAULT)
         ])) {
             Session::set("msgSucesso", "Registro inserido com sucesso.");
         } else {
             Session::set('msgError', 'Falha ao tentar inserir o registro na base de dados.');
         }
 
-        Redirect::page("categoria");
+        Redirect::page("usuario");
     }
 
     /**
@@ -59,8 +72,10 @@ class Categoria extends ControllerMain
         if ($this->model->update(
             $post['id'], 
             [
-                "descricao" => $post["descricao"],
-                "statusRegistro" => $post['statusRegistro']
+                "nome" => $post['nome'],
+                "email" => $post['email'],
+                "statusRegistro" => $post['statusRegistro'],
+                "nivel" => $post['nivel']
             ]
         )) {
             Session::set("msgSucesso", "Registro atualizado com sucesso.");
@@ -68,7 +83,7 @@ class Categoria extends ControllerMain
             Session::set('msgError', 'Falha ao tentar atualizar o registro na base de dados.');
         }
 
-        Redirect::page("categoria");
+        Redirect::page("usuario");
     }
 
     /**
@@ -86,6 +101,6 @@ class Categoria extends ControllerMain
             Session::set('msgError', 'Falha ao tentar excluir o registro na base de dados.');
         }
 
-        Redirect::page("categoria");
+        Redirect::page("usuario");
     }
 }
