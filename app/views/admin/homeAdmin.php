@@ -22,6 +22,7 @@ echo $this->loadView("comuns/menu");
         <div class="container">
 
             <?= Formulario::exibeMsgError() ?>
+            <?= Formulario::exibeMsgSucesso() ?>
 
             <div class="row ml-3">
                 <br />

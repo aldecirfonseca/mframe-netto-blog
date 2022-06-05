@@ -3,6 +3,7 @@
 use App\Library\ControllerMain;
 use App\Library\Redirect;
 use App\Library\Session;
+use App\Library\Email;
 
 class Login extends ControllerMain 
 {
@@ -71,12 +72,209 @@ class Login extends ControllerMain
     }
 
     /**
-     * solicitaRecuracaoSenha
+     * solicitaRecuperacaoSenha - Carrega a view para recuperação de senha
      *
      * @return void
      */
-    public function solicitaRecuracaoSenha()
+    public function solicitaRecuperacaoSenha() 
     {
-        $this->loadView("admin/formEsqueceuASenha");
+        $this->loadView("admin/formSolicitaRecuperacaoSenha");
+    }
+
+    /*
+    *   Envia e-mail com link para recuperação da senha
+    */
+
+    public function gerarLinkRecuperaSenha() 
+    {
+        $post           = $this->getPost();
+        $usuarioModel   = $this->loadModel("Usuario");
+        
+        $user           = $usuarioModel->getUserEmail($post['email']);
+
+        if (!$user) {
+
+            Redirect::page("Login/solicitaRecuperacaoSenha", [
+                "msgErros" => "Não foi possivel localizar o e-mail na base de dados !"
+            ]);
+
+        } else {
+
+            $created_at = date('Y-m-d H:i:s');
+            $chave      = sha1($user['id'] . $user['senha'] . date('YmdHis', strtotime($created_at)));
+            $cLink      = SITEURL . "Login/recuperarSenha/recuperaSenha/" . $chave;
+
+            $corpoEmail = '
+                Você solicitou a recuperação de sua senha? <br><br>
+                Caso tenha solicitação clique no link a seguir para prosseguir <a href="'. $cLink . '" title="Recuperar a senha">Recuperar a senha</a> <br><br>
+                Att: <br><br>
+                Equipe Netto Blog
+            ';
+
+            $lRetMail = Email::enviaEmail(
+                'contatofoody@gmail.com',                               /* Email do Remetente*/
+                'Netto Blog Contato',                                   /* Nome do Remetente */
+                'Netto Blog - Solicitação de recuperação de senha.',    /* Assunto do e-mail */
+                $corpoEmail,                                            /* Corpo do E-mail */
+                $user['email']                                          /* Destinatário do E-mail */
+            );
+
+            if ($lRetMail) {
+
+                // Gravar o link no banco de dados
+                $usuarioRecuperaSenhaModel = $this->loadModel("UsuarioRecuperaSenha");
+
+                // Desativando solicitações antigas
+
+                $usuarioRecuperaSenhaModel->desativaChaveAntigas($user["id"]);
+
+                // Inserindo nova solicitação
+
+                $resIns = $usuarioRecuperaSenhaModel->insert([
+                    "usuario_id" => $user["id"], 
+                    "chave" => $chave,
+                    "created_at" => $created_at
+                ]);
+
+                if ($resIns) {
+                    Redirect::page("Home/Login", [
+                        "msgSucesso" => "Link para recuperação da senha enviado com sucesso! Verifique seu e-mail."
+                    ]);   
+                } else {
+                    Redirect::page("Login/solicitaRecuperacaoSenha", [
+                        "msgErros" => "Ocorreu uma falha ao resgistrar o link de recuperação da senha, favor descartar o e-mail recibido e solictar no link mais tarde."
+                    ]);   
+                }
+
+            } else {
+
+                Redirect::page("Login/solicitaRecuperacaoSenha", [
+                    "msgErros" => "Não foi possivel enviar o e-mail, favor tentar mais tarde."
+                ]);      
+
+            }
+        }
+    }
+
+
+    /**
+     * recuperarSenha - Abre formulário para chamada da view de recuperação da senha
+     *
+     * @return void
+     */
+    public function recuperarSenha()
+    {
+        $chave = $this->getid();
+
+        $usuarioRecuperaSenhaModel  = $this->loadModel('UsuarioRecuperaSenha');
+        $userChave                  = $usuarioRecuperaSenhaModel->getRecuperaSenhaChave($chave);
+
+        if ($userChave) {
+
+            if (date("Y-m-d H:i:s") <= date("Y-m-d H:i:s" , strtotime("+1 hours" , strtotime($userChave['created_at'])))) {
+
+                $usuarioModel = $this->loadModel('Usuario');
+                $user           = $usuarioModel->getById($userChave['usuario_id']);
+
+                if ($user) {
+
+                    $chaveRecSenha = sha1($userChave['usuario_id'] . $user['senha'] . date("YmdHis", strtotime($userChave['created_at'])));
+
+                    if ($chaveRecSenha == $userChave['chave']) {
+
+                        $dbDados = [
+                            "id"    => $user['id'],
+                            'nome'  => $user['nome'],
+                            'usuariorecuperasenha_id' => $userChave['id']
+                        ];
+
+                        Session::destroy("msgErros");
+
+                        // chave válida
+
+                        $this->loadView("admin/formRecuperarSenha", $dbDados);
+
+                        //
+
+                    } else {
+                        // Desativa chave
+                        $upd = $usuarioRecuperaSenhaModel->desativaChave($userChave['id']);
+
+                        Redirect::page("Login/solicitaRecuperacaoSenha", [
+                            "msgErros" => "Chave de recuperação da senha inválida."
+                        ]); 
+                    }
+
+                } else {
+
+                    // Desativa chave
+                    $upd = $usuarioRecuperaSenhaModel->desativaChave($userChave['id']);
+
+                    Redirect::page("Login/solicitaRecuperacaoSenha", [
+                        "msgErros" => "Chave de recuperação da senha inválida."
+                    ]); 
+
+                }
+                
+            } else {
+
+                // Desativa chave
+                $upd = $usuarioRecuperaSenhaModel->desativaChave($userChave['id']);
+
+                Redirect::page("Login/solicitaRecuperacaoSenha", [
+                    "msgErros" => "Chave de recuperação da senha inválida."
+                ]); 
+            }
+
+        } else {
+            Redirect::page("Login/solicitaRecuperacaoSenha", [
+                "msgErros" => "Chave de recuperação da senha inválida (1)."
+            ]);             
+        }
+    }
+
+        /**
+     * atualizaRecuperaSenha - Atualiza recupera a senha do usuário
+     *
+     * @return void
+     */
+    public function atualizaRecuperaSenha() 
+    {
+        $UsuarioModel = $this->loadModel("Usuario");
+
+        $post       = $this->getPost();
+        $userAtual  = $UsuarioModel->getById($post["id"]);
+
+        if ($userAtual) {
+
+            if (trim($post["NovaSenha"]) == trim($post["NovaSenha2"])) {
+
+                if ($UsuarioModel->update($post['id'], ['senha' => password_hash(trim($post["NovaSenha"]), PASSWORD_DEFAULT)])) {
+
+                    // Desativa chave
+                    $usuarioRecuperaSenhaModel = $this->loadModel('UsuarioRecuperaSenha');
+
+                    $usuarioRecuperaSenhaModel->update($post['usuariorecuperasenha_id'], ['statusRegistro' => 2]);
+                    //
+
+                    Session::destroy("msgErros");
+                    Redirect::page("Home/Login", [
+                        "msgSucesso"    => "Senha alterada com sucesso !"
+                    ]);  
+
+                } else {
+                    Session::set("msgErros", "Falha na atualização da nova senha !");
+                    $this->loadView("formRecuperaSenha"); 
+                }
+
+            } else {
+                Session::set("msgErros", "Nova senha e conferência da senha estão divergentes !");
+                $this->loadView("formRecuperaSenha");                   
+            }
+
+        } else {
+            Session::set("msgErros", "Usuário inválido !");
+            $this->loadView("formRecuperaSenha"); 
+        }
     }
 }

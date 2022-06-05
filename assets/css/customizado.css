@@ -2,3 +2,15 @@
     overflow-x: hidden !important;
     overflow-y: hidden !important;
 }
+
+.btnCustomAzul {
+    border-style: solid !important;
+    border-color: #384aeb !important;
+    background-color: white !important;
+    color: #384aeb !important;
+}
+
+.btnCustomAzul:hover {
+    background-color: #384aeb !important;
+    color: white !important;
+}

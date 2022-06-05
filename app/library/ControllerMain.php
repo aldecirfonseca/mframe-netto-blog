@@ -106,11 +106,11 @@ class ControllerMain
     {
         return $this->dados['get'];
     }
-    
+
     /**
-     * getId
+     * geId
      *
-     * @return void
+     * @return string
      */
     public function getId()
     {

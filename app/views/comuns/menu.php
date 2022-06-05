@@ -28,7 +28,7 @@
                         <?php
                             if (!isset($_SESSION['userCodigo'])) {
                                 ?>
-                                <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>home/login">Área restrita</a></li>
+                                <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>Home/login">Área restrita</a></li>
                                 <?php
                             } else {
 
@@ -37,8 +37,8 @@
                                     <li class="nav-item submenu dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Gestão</a>
                                         <ul class="dropdown-menu">
-                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>usuario">Usuário</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>categoria">Categoria</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>Usuario">Usuário</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>Categoria">Categoria</a></li>
                                             <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>noticia">Notícia</a></li>
                                             <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>sobreoAutor">Sobre o Autor'</a></li>
                                         </ul>
@@ -50,9 +50,9 @@
                                 <li class="nav-item submenu dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?= substr($_SESSION['userEmail'], 0 , strripos($_SESSION['userEmail'], "@") ) ?></a>
                                     <ul class="dropdown-menu">
-                                        <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>login/signOut">Sair</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>Login/signOut">Sair</a></li>
                                         <li class="nav-item"><a class="nav-link" href="#">Perfil</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#">Trocar Senha</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="<?= SITEURL ?>Usuario/trocaSenha">Trocar Senha</a></li>
                                     </ul>
                                 </li>     
                                 <?php

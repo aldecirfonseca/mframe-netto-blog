@@ -34,10 +34,10 @@ class Categoria extends ControllerMain
     public function insert()
     {
         $post = $this->getPost();
-
-        if ($this->model->insert([
-                "descricao" => $post['descricao'],
-                "statusRegistro" => $post['statusRegistro']
+        
+        if ($this->model->insert(            [
+            "descricao" => $post['descricao'],
+            "statusRegistro" => $post['statusRegistro']
         ])) {
             Session::set("msgSucesso", "Registro inserido com sucesso.");
         } else {
@@ -57,11 +57,11 @@ class Categoria extends ControllerMain
         $post = $this->getPost();
 
         if ($this->model->update(
-            $post['id'], 
-            [
+                $post["id"],
+                [
                 "descricao" => $post["descricao"],
                 "statusRegistro" => $post['statusRegistro']
-            ]
+                ]
         )) {
             Session::set("msgSucesso", "Registro atualizado com sucesso.");
         } else {

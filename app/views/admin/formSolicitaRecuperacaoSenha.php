@@ -10,7 +10,7 @@ echo $this->loadView('comuns/menu');
     <div class="container">
         <div class="blog-banner">
             <div class="mt-5 mb-5 text-left">
-                <h1 style="color: #384aeb;">Recuperação de Senha</h1>
+                <h1 style="color: #384aeb;">Solicita Recuperação de Senha</h1>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@ echo $this->loadView('comuns/menu');
 
 <section class="section-margin section-login">
     
-    <div class="container" style="margin-top: 200px;">
+    <div class="container" style="margin-top: 100px;">
         
         <div class="row">
             <div class="col-lg-4 offset-lg-4">
@@ -26,14 +26,14 @@ echo $this->loadView('comuns/menu');
                 <div class="row">
 
                     <div class="col-sm-12 header-login mb-4">
-                        <h4 class="intro-title header-login-title p-2 font-weight-bold">Recuperar a Senha</h4>
+                        <h6 class="intro-title header-login-title p-2 font-weight-bold">Informe seu e-mail</h6>
                     </div>        
                     
                     <div class="col-sm-12">
                         <div class="form-group">
                             <input class="form-control" name="email" id="email" 
                                     type="text" 
-                                    placeholder="Informe seu e-mail"
+                                    placeholder="e-mail"
                                     required>
                         </div>
                     </div>
@@ -54,8 +54,8 @@ echo $this->loadView('comuns/menu');
             }
             ?>
 
-            <div class="form-group mt-3">
-                    <button type="submit" class="button button-contactForm login-button p-2 font-weight-bold text-white">Enviar</button>
+            <div class="form-group mt-3 controls">
+                    <button type="submit" class="btn btn-outline-primary btnCustomAzul">Enviar</button>
                 </div>
             </div>
 

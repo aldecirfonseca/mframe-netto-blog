@@ -8,13 +8,13 @@ class UsuarioModel extends ModelMain
     public $table = "usuario";
 
     /**
-     * lista
+     * getLista
      *
-     * @return array
+     * @return void
      */
-    public function lista()
+    public function getLista()
     {
-        return $this->db->query($this->table, "all", ["orderby" => ['nome']]);
+        return $this->db->query($this->table, "all", ["orderby" , ["nome"]]);
     }
 
     /**

@@ -88,6 +88,7 @@ use PDOException;
         {
             $save['sql'] = "";
             $virgula = false;
+            $sinal = " = ";
 
             foreach ($campos as $key => $value) {
                 $juncao = " " . $conector . " ";
@@ -95,9 +96,14 @@ use PDOException;
                 if (strtoupper(substr(trim($key), 0, 2)) == "OR") {
                     $juncao = " OR ";
                     $key    = substr(trim($key), 3);
+                } 
+
+                if (strtoupper(substr(trim($key), strlen(trim($key)) -2 , 2)) == "<>") {
+                    $sinal = " <> ";
+                    $key = trim(str_replace('<>', "", $key));
                 }
 
-                $save['sql'] .= ($virgula ? $juncao : "" ) . "`" . $key . "` = :" . $key . " ";
+                $save['sql'] .= ($virgula ? $juncao : "" ) . "`" . $key . "` " . $sinal . " :" . $key . " ";
                 $save['dados'][":" . $key] = $value;
                 $virgula = true;
             }
@@ -166,7 +172,7 @@ use PDOException;
             // where
 
             if (isset($configs["where"])) {
-                $ret = $this->getCampos($configs['where']);
+                $ret = $this->getCampos($configs['where'], "AND");
                 $save["sql"] .=  "WHERE " . $ret['sql'];
                 $save["save"] = array_merge($ret["dados"], $save["dados"]);
             }
@@ -271,7 +277,7 @@ use PDOException;
                 $values = implode(" , ", array_keys($save['dados']));
 
                 $sql = 'INSERT INTO `' . $table . '` (`' . $fields . '`) VALUES (' . $values . ')';
-                
+
                 $conexao    = $this->connect();
                 $query      = $conexao->prepare($sql);
                 $query->execute($save["dados"]);
@@ -281,7 +287,7 @@ use PDOException;
                 self::__destruct();
                 
             } catch (\Exception $exc) {
-                echo "Erro ao Inserir Registro, favor entrar em contato com Suporte Técnico" . $exc->getTraceAsString();
+                echo "Erro ao Inserir Registro, favor entrar em contato com Suporte Técnico" . $exc->getTraceAsString(); exit;
             }
 
             return $rs;
@@ -320,7 +326,7 @@ use PDOException;
             $query = $this->connect()->prepare($sql);
             $query->execute($save["save"]);
 
-            $rs = $query->rowCount() or die(print_r($query->errorInfo(), true));
+            $rs = $query->rowCount(); // or die(print_r($query->errorInfo(), true));
             self::__destruct();
 
             return $rs;

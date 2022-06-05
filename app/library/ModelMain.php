@@ -30,7 +30,6 @@ class ModelMain
         );
     }
 
-    
     /**
      * insert
      *
@@ -46,7 +45,7 @@ class ModelMain
         } else {
             return false;
         }
-    }
+    } 
 
     /**
      * update
@@ -56,7 +55,7 @@ class ModelMain
      */
     public function update($id, $dados) 
     {
-        $rsc = $this->db->update($this->table, ["id" => $id], $dados); 
+        $rsc = $this->db->update($this->table, ["id" => $id], $dados);
 
         if ($rsc > 0) {
             return true;

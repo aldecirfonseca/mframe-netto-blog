@@ -7,13 +7,13 @@ use App\Library\Redirect;
 class Usuario extends ControllerMain
 {
     /**
-     * index
+     * lista
      *
      * @return void
      */
     public function index()
     {
-        $this->loadView("admin/listaUsuario", $this->model->lista());
+        $this->loadView("admin/listaUsuario", $this->model->getLista());
     }
 
     /**
@@ -23,21 +23,18 @@ class Usuario extends ControllerMain
      */
     public function form()
     {
-        $aDados = [
-            "statusRegistro" => 1
-        ];
+        $dbDados = [];
 
-        // recuperar os dados do $id
-        if ($this->getAcao() != "insert") {
-            $aDados = $this->model->getById($this->dados['id']);
+        if ( $this->getAcao() != 'new') {
+            // buscar o usuário pelo $id no banco de dados
+            $dbDados = $this->model->getById($this->getId());
         }
 
-        $this->loadHelper("formulario");
-        $this->loadView("admin/formUsuario", $aDados);
+        $this->loadView('admin/formUsuario', $dbDados);
     }
 
     /**
-     * insert
+     * new - insere um novo usuário
      *
      * @return void
      */
@@ -46,48 +43,42 @@ class Usuario extends ControllerMain
         $post = $this->getPost();
 
         if ($this->model->insert([
-            "nome" => $post['nome'],
-            "email" => $post['email'],
-            "statusRegistro" => $post['statusRegistro'],
-            "nivel" => $post['nivel'],
-            "senha" => password_hash(trim($post['senha']), PASSWORD_DEFAULT)
+            "statusRegistro"    => $post['statusRegistro'],
+            "nivel"             => $post['nivel'],
+            "nome"              => $post['nome'],
+            "email"             => $post['email'],
+            "senha"             => password_hash($post['senha'], PASSWORD_DEFAULT)
         ])) {
-            Session::set("msgSucesso", "Registro inserido com sucesso.");
+            Redirect::page("Usuario", ["msgSucesso" => "Usuário inserido com sucesso !"]);
         } else {
-            Session::set('msgError', 'Falha ao tentar inserir o registro na base de dados.');
+            Redirect::page("Usuario", ["msgErros" => "Falha na inserção dos dados do Usuário !"]);
         }
-
-        Redirect::page("usuario");
     }
+
 
     /**
      * update
      *
      * @return void
-     */
+     */    
     public function update()
     {
         $post = $this->getPost();
 
-        if ($this->model->update(
-            $post['id'], 
-            [
-                "nome" => $post['nome'],
-                "email" => $post['email'],
-                "statusRegistro" => $post['statusRegistro'],
-                "nivel" => $post['nivel']
-            ]
-        )) {
-            Session::set("msgSucesso", "Registro atualizado com sucesso.");
+        if ($this->model->update($post['id'], [
+            "nome"              => $post['nome'],
+            "statusRegistro"    => $post['statusRegistro'],
+            "nivel"             => $post['nivel'],
+            "email"             => $post['email']
+        ])) {
+            Redirect::page("Usuario", ["msgSucesso" => "Usuário alterado com sucesso !"]);
         } else {
-            Session::set('msgError', 'Falha ao tentar atualizar o registro na base de dados.');
-        }
-
-        Redirect::page("usuario");
+            Redirect::page("Usuario", ["msgErros" => "Falha na alteração dos dados do Usuário !"]);
+        }      
     }
 
     /**
-     * delete
+     * delete -   Exclui um usuário no banco de dados
      *
      * @return void
      */
@@ -95,12 +86,67 @@ class Usuario extends ControllerMain
     {
         $post = $this->getPost();
 
-        if ($this->model->delete($post['id'])) {
-            Session::set("msgSucesso", "Registro excluído com sucesso.");
+        if ($this->model->delete([ "id" => $post['id']])) {
+            Redirect::page("Usuario", ["msgSucesso" => "Usuário excluído com sucesso !"]);
         } else {
-            Session::set('msgError', 'Falha ao tentar excluir o registro na base de dados.');
-        }
-
-        Redirect::page("usuario");
+            Redirect::page("Usuario", ["msgErros" => "Falha na exclusão do Usuário !"]);
+        }   
     }
+
+    /**
+     * trocaSenha - Chama a view Trocar a senha
+     *
+     * @return void
+     */
+    public function trocaSenha()
+    {
+        $this->loadView("admin/formTrocaSenha");
+    }
+
+    /**
+     * atualizaSenha - Atualiza a senha do usuário
+     *
+     * @return void
+     */
+    public function atualizaTrocaSenha() 
+    {
+        $post = $this->getPost();
+        $userAtual = $this->model->getById($post["id"]);
+
+        if ($userAtual) {
+
+            if (password_verify(trim($post["senhaAtual"]), $userAtual['senha'])) {
+
+                if (trim($post["novaSenha"]) == trim($post["novaSenha2"])) {
+
+                    $lUpdate = $this->model->update($post['id'], ['senha' => password_hash($post["novaSenha"], PASSWORD_DEFAULT)]);
+
+                    if ($lUpdate) {
+                        Redirect::page("Usuario/trocaSenha", [
+                            "msgSucesso"    => "Senha alterada com sucesso !"
+                        ]);  
+                    } else {
+                        Redirect::page("Usuario/trocaSenha", [
+                            "msgErros"    => "Falha na atualização da nova senha !"
+                        ]);    
+                    }
+
+                } else {
+                    Redirect::page("Usuario/trocaSenha", [
+                        "msgErros"    => "Nova senha e conferência da senha estão divergentes !"
+                    ]);                  
+                }
+
+            } else {
+                Redirect::page("Usuario/trocaSenha", [
+                    "msgErros"    => "Senha atual informada não confere!"
+                ]);               
+            }
+        } else {
+            Redirect::page("Usuario/trocaSenha", [
+                "msgErros"    => "Usuário inválido !"
+            ]);   
+        }
+    }
+
 }

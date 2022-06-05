@@ -24,7 +24,7 @@ class Email
         $mail->Host         = "smtp.gmail.com";
         $mail->Port         = 587;
         $mail->Username     = "contatofoody@gmail.com";         // Usuário de e-mail para autenticação
-        $mail->Password     = "";                      // Senha do e-mail de autenticação
+        $mail->Password     = "f@@dy2021";                      // Senha do e-mail de autenticação
         $mail->From         = $emailRemetente;                  // E-mail remetente
         $mail->FromName     = $nomeRemetente;                   // Nome do Remetente
         
