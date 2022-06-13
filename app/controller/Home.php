@@ -1,6 +1,8 @@
 <?php
 
 use App\Library\ControllerMain;
+use App\Library\Redirect;
+use App\Library\Session;
 
 class Home extends ControllerMain
 {
@@ -11,15 +13,6 @@ class Home extends ControllerMain
             "ano"    => 2022,
             "turma"  => "5 período"
         ]);
-    }
-
-    public function categoria()
-    {
-        echo "controller Home, método Categoria"; 
-
-        $CategoriaModel = $this->loadModel("Categoria");
-
-        var_dump($CategoriaModel->lista());
     }
 
     /**

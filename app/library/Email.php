@@ -43,7 +43,5 @@ class Email
         } else {
             return false;
         }
-
     }
-
 }

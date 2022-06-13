@@ -14,3 +14,9 @@ define('DB_PORT'    , '3306');
 define('DB_USER'    , 'root');
 define('DB_PASSWORD', '');
 define("DB_BDADOS"  , 'nettoblog');
+
+// Controller base
+define("CONTROLLERBASE", "Home");
+
+// Controllers não autenticados
+define("CONTROLLER_SEM_AUTENTICACAO", ['Home', 'Login']); 

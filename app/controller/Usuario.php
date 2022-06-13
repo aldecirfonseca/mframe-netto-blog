@@ -148,5 +148,4 @@ class Usuario extends ControllerMain
             ]);   
         }
     }
-
 }

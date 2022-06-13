@@ -43,7 +43,6 @@ class Login extends ControllerMain
             Session::set("userLogin", $aUsuario['nome']);
             Session::set("userEmail", $aUsuario['email']);
             Session::set("userNivel", $aUsuario['nivel']);
-            Session::set("userSenha", $aUsuario['senha']);
             
             // Direcionar o usuário para página home
             Redirect::page("home/homeAdmin");
@@ -66,7 +65,6 @@ class Login extends ControllerMain
         Session::destroy('userLogin');
         Session::destroy('userEmail');
         Session::destroy('userNivel');
-        Session::destroy('userSenha');
         
         Redirect::Page("home");
     }
@@ -233,7 +231,7 @@ class Login extends ControllerMain
         }
     }
 
-        /**
+    /**
      * atualizaRecuperaSenha - Atualiza recupera a senha do usuário
      *
      * @return void
@@ -242,8 +240,10 @@ class Login extends ControllerMain
     {
         $UsuarioModel = $this->loadModel("Usuario");
 
-        $post       = $this->getPost();
-        $userAtual  = $UsuarioModel->getById($post["id"]);
+        $post           = $this->getPost();
+        $userAtual      = $UsuarioModel->getById($post["id"]);
+        $dbDados        = $post;
+        $dbDados['nome'] = $userAtual['nome'];
 
         if ($userAtual) {
 
@@ -264,17 +264,17 @@ class Login extends ControllerMain
 
                 } else {
                     Session::set("msgErros", "Falha na atualização da nova senha !");
-                    $this->loadView("formRecuperaSenha"); 
+                    $this->loadView("admin/formRecuperarSenha", $dbDados); 
                 }
 
             } else {
                 Session::set("msgErros", "Nova senha e conferência da senha estão divergentes !");
-                $this->loadView("formRecuperaSenha");                   
+                $this->loadView("admin/formRecuperarSenha", $dbDados);                   
             }
 
         } else {
             Session::set("msgErros", "Usuário inválido !");
-            $this->loadView("formRecuperaSenha"); 
+            $this->loadView("admin/formRecuperarSenha", $dbDados); 
         }
     }
 }

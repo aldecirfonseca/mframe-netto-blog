@@ -88,10 +88,10 @@ use PDOException;
         {
             $save['sql'] = "";
             $virgula = false;
-            $sinal = " = ";
 
             foreach ($campos as $key => $value) {
                 $juncao = " " . $conector . " ";
+                $sinal = " = ";
 
                 if (strtoupper(substr(trim($key), 0, 2)) == "OR") {
                     $juncao = " OR ";

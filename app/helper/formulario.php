@@ -15,3 +15,26 @@
             return $default;
         }
     }
+
+    /**
+     * setDisable
+     *
+     * @param string $action 
+     * @return string
+     */
+    function setDisable($action)
+    {
+        return $action === 'view' || $action === 'delete' ? 'disabled' : '';
+    }
+
+    /**
+     * setSelected
+     *
+     * @param mixed $value 
+     * @param mixed $option 
+     * @return string
+     */
+    function setSelected($value, $option)
+    {
+        return $value == $option ? 'selected' : '';
+    }

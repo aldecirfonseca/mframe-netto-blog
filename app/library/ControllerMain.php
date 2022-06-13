@@ -8,6 +8,13 @@ class ControllerMain
     { 
         $this->dados = $dados;
 
+        // Verificando se o controller exige autenticação
+        if (!in_array($dados['controller'], CONTROLLER_SEM_AUTENTICACAO)) {
+            if (Session::get('userCodigo') == "") {         // Usuário não autenticado
+                Redirect::page(CONTROLLERBASE);
+            }            
+        }
+
         // Criando o objeto do Model e conectando ao Database
         $cModel = $dados['model'] . 'Model';
 
