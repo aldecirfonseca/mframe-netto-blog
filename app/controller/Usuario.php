@@ -3,6 +3,7 @@
 use App\Library\ControllerMain;
 use App\Library\Session;
 use App\Library\Redirect;
+use App\Library\Validator;
 
 class Usuario extends ControllerMain
 {
@@ -42,16 +43,22 @@ class Usuario extends ControllerMain
     {
         $post = $this->getPost();
 
-        if ($this->model->insert([
-            "statusRegistro"    => $post['statusRegistro'],
-            "nivel"             => $post['nivel'],
-            "nome"              => $post['nome'],
-            "email"             => $post['email'],
-            "senha"             => password_hash($post['senha'], PASSWORD_DEFAULT)
-        ])) {
-            Redirect::page("Usuario", ["msgSucesso" => "Usuário inserido com sucesso !"]);
+        // Valida dados recebidos do formulário
+        if (Validator::make($post, $this->model->validationRules)) {
+            return Redirect::page("Usuario/form/insert");
         } else {
-            Redirect::page("Usuario", ["msgErros" => "Falha na inserção dos dados do Usuário !"]);
+
+            if ($this->model->insert([
+                "statusRegistro"    => $post['statusRegistro'],
+                "nivel"             => $post['nivel'],
+                "nome"              => $post['nome'],
+                "email"             => $post['email'],
+                "senha"             => password_hash($post['senha'], PASSWORD_DEFAULT)
+            ])) {
+                Redirect::page("Usuario", ["msgSucesso" => "Usuário inserido com sucesso !"]);
+            } else {
+                Redirect::page("Usuario", ["msgErros" => "Falha na inserção dos dados do Usuário !"]);
+            }
         }
     }
 
@@ -65,16 +72,22 @@ class Usuario extends ControllerMain
     {
         $post = $this->getPost();
 
-        if ($this->model->update($post['id'], [
-            "nome"              => $post['nome'],
-            "statusRegistro"    => $post['statusRegistro'],
-            "nivel"             => $post['nivel'],
-            "email"             => $post['email']
-        ])) {
-            Redirect::page("Usuario", ["msgSucesso" => "Usuário alterado com sucesso !"]);
+        // Valida dados recebidos do formulário
+        if (Validator::make($post, $this->model->validationRules)) {
+            return Redirect::page("Usuario/form/update");
         } else {
-            Redirect::page("Usuario", ["msgErros" => "Falha na alteração dos dados do Usuário !"]);
-        }      
+
+            if ($this->model->update($post['id'], [
+                "nome"              => $post['nome'],
+                "statusRegistro"    => $post['statusRegistro'],
+                "nivel"             => $post['nivel'],
+                "email"             => $post['email']
+            ])) {
+                Redirect::page("Usuario", ["msgSucesso" => "Usuário alterado com sucesso !"]);
+            } else {
+                Redirect::page("Usuario", ["msgErros" => "Falha na alteração dos dados do Usuário !"]);
+            } 
+        }    
     }
 
     /**
@@ -146,6 +159,42 @@ class Usuario extends ControllerMain
             Redirect::page("Usuario/trocaSenha", [
                 "msgErros"    => "Usuário inválido !"
             ]);   
+        }
+    }
+
+    /**
+     * perfil
+     *
+     * @return void
+     */
+    public function perfil()
+    {
+        $this->loadHelper("formulario");
+        $this->loadView("admin/formPerfil", $this->model->getById(Session::get('userCodigo')));
+    }
+
+    /**
+     * atualizaPerfil
+     *
+     * @return void
+     */
+    public function atualizaPerfil()
+    {
+        $post = $this->getPost();
+
+        if ($this->model->update($post['id'], ['nome' => $post['nome'], 'email' => $post['email']])) {
+
+            Session::set("userLogin", $post['nome']);
+            Session::set("userEmail", $post['email']);
+
+            Redirect::page("Usuario/perfil", [
+                "msgSucesso"    => "Perfil atualizado com sucesso!"
+            ]);  
+
+        } else {
+            Redirect::page("Usuario/perfil", [
+                "msgErros"    => "Falha na atualização do se perfil, favor tentar novamente mais tarde!"
+            ]);  
         }
     }
 }

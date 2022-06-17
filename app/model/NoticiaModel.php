@@ -7,6 +7,22 @@ class NoticiaModel extends ModelMain
 {
     public $table = "noticia";
 
+    // Validação dos campos
+    public $validationRules = [
+        "titulo"  => [
+            "label" => 'Titulo',
+            "rules" => 'required|min:3|max:60'
+        ],
+        "texto"  => [
+            "label" => 'Descrição',
+            "rules" => 'required|min:5'
+        ],
+        "statusRegistro"  => [
+            "label" => 'Status',
+            "rules" => 'required|integer'
+        ],
+    ]; 
+
     /**
      * lista as notícias
      *
@@ -72,27 +88,25 @@ class NoticiaModel extends ModelMain
     public function insertNoticia($dados, $nomeImagem)
     {
         // insert tabela noticia
-        $rsc = $this->db->dbInsert(
-            "INSERT INTO noticia
-            (titulo, texto, statusRegistro, imagem, usuario_id)
-            VALUES (?, ?, ?, ?, ?)",
+        $rsc = $this->db->insert(
+            $this->table, 
             [
-                $dados['titulo'],
-                $dados['texto'],
-                $dados['statusRegistro'],
-                $nomeImagem,
-                Session::get('userCodigo')
+                "titulo"            => $dados['titulo'],
+                "texto"             => $dados['texto'],
+                "statusRegistro"    => $dados['statusRegistro'],
+                "imagem"            => $nomeImagem,
+                "usuario_id"        => Session::get('userCodigo')
             ]
         );
 
         foreach ($dados['categoria'] as $categoria) {
+
             // insert tabela noticiacategoria
-            $this->db->dbInsert(
-                "INSERT INTO noticiacategoria (noticia_id, categoria_id)
-                VALUES (?, ?)",
+            $this->db->insert(
+                "noticiacategoria",
                 [
-                    $rsc,
-                    $categoria
+                    "noticia_id"    => $rsc ,
+                    "categoria_id"  => $categoria
                 ]
             );
         }
@@ -110,7 +124,7 @@ class NoticiaModel extends ModelMain
      * @param  array $dados
      * @return boolean
      */
-    public function update($dados, $nomeImagem)
+    public function updateNoticia($dados, $nomeImagem)
     {
         $rsc = 1;
 
@@ -139,38 +153,32 @@ class NoticiaModel extends ModelMain
 
         // se foi alterado, da update
         if ($alterado) {
-            $rsc = $this->db->dbUpdate(
-                "UPDATE noticia
-                set titulo = ?, texto = ?, statusRegistro = ?, imagem = ?
-                WHERE id = ?",
+
+            $rsc = $this->db->update(
+                $this->table, 
                 [
-                    $dados["titulo"],
-                    $dados["texto"],
-                    $dados["statusRegistro"],
-                    $nomeImagem,
-                    $dados["id"]
+                    "id" => $dados["id"]
+                ], 
+                [
+                    "titulo"            => $dados["titulo"],
+                    "texto"             => $dados["texto"],
+                    "statusRegistro"    => $dados["statusRegistro"],
+                    "imagem"            => $nomeImagem
                 ]
             );
         }
 
         // deleta todos os registros da tabela noticia categoria da noticia alterada
-        $this->db->dbDelete(
-            "DELETE FROM noticiacategoria WHERE noticia_id = ?",
-            [
-                $dados["id"]
-            ]
-        );
+        $rsc = $this->db->delete("noticiacategoria", ["noticia_id" => $dados["id"]]);
 
         // insere novamente as categorias selecionadas
         foreach ($dados['categoria'] as $categoria) {
-            $rsc3 = $this->db->dbInsert(
-                "INSERT INTO noticiacategoria (noticia_id, categoria_id)
-                VALUES (?, ?)",
-                [
-                    $dados["id"],
-                    $categoria
-                ]
+
+            $rsc3 = $this->db->insert(
+                "noticiacategoria", 
+                [ 'noticia_id' => $dados["id"], 'categoria_id' => $categoria ]
             );
+
         }
 
         if ($rsc > 0 || $rsc3 > 0) {
@@ -186,28 +194,147 @@ class NoticiaModel extends ModelMain
      * @param  integer $id
      * @return boolean
      */
-    public function delete($id)
+    public function deleteNoticia($id)
     {
         // delete na tabela noticiacategoria
-        $rsc = $this->db->dbDelete(
-            "DELETE FROM noticiacategoria WHERE noticia_id = ?",
-            [
-                $id
-            ]
-        );
+        $rsc = $this->db->delete("noticiacategoria", ["noticia_id" => $id]);
 
         // delete na tabela noticia
-        $rsc2 = $this->db->dbDelete(
-            "DELETE FROM noticia WHERE id = ?",
-            [
-                $id
-            ]
-        );
+        $rsc2 = $this->db->delete($this->table, ["id" => $id]);
 
         if ($rsc > 0 || $rsc2 > 0) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * CategoriaQuantidadeNoticias
+     *
+     * @return array
+     */
+    public function CategoriaQuantidadeNoticias()
+    {
+        $sql = "SELECT nc.categoria_id, c.descricao, COUNT(*) AS qtde
+                FROM noticiacategoria AS nc
+                INNER JOIN categoria AS c ON c.id = nc.categoria_id
+                GROUP BY nc.categoria_id
+                ORDER BY c.descricao";
+
+        $rsc = $this->db->dbSelect($sql);
+
+        return $this->db->dbBuscaArrayAll($rsc);       
+    }
+
+    /**
+     * CategoriaQuantidadeNoticias
+     *
+     * @return array
+     */
+    public function NoticasMaisPopulares()
+    {
+        $sql = "SELECT id, titulo, qtdVisualizacao, imagem
+                FROM noticia 
+                ORDER BY qtdVisualizacao DESC
+                LIMIT 4";
+
+        $rsc = $this->db->dbSelect($sql);
+
+        return $this->db->dbBuscaArrayAll($rsc);       
+    }
+
+
+    /**
+     * getNoticiaComentarioQuantidade
+     *
+     * @param integer $noticia_id 
+     * @return integer
+     */
+    public function getNoticiaComentarioQuantidade($noticia_id)
+    {
+        $qtde = $this->db->query(
+            "noticiacomentario", 
+            "count",
+            [
+                "where"     => ["noticia_id" => $noticia_id]
+            ]
+        );
+        
+        return $qtde;
+    }
+    
+    /**
+     * lista as notícias
+     *
+     * @return array
+     */
+    public function listaNoticiasHome($retorno = 0, $categoria_id = 0, $inicio = 0, $fim = 3)
+    {
+        $filtra = "";
+        $join = "";
+        $parametros = [];
+
+        if (($categoria_id != 0)) {
+            $join = " LEFT JOIN noticiacategoria AS nc ON nc.noticia_id = noticia.id ";
+            $filtra .= " AND nc.categoria_id = ? ";
+            $parametros = [$categoria_id];
+        }
+
+        $sql = "
+            SELECT noticia.*, usuario.nome, nl.id AS idMarcadoLeitura
+            FROM {$this->table}
+            INNER JOIN usuario ON usuario.id = noticia.usuario_id
+            LEFT JOIN noticialida AS nl ON nl.noticia_id = noticia.id
+            " . $join . 
+            " WHERE noticia.statusRegistro = 1 " .  $filtra . "
+            ORDER BY created_at DESC
+        ";
+
+        if ($retorno == 1) {
+            $sql .= " LIMIT " . $inicio . "," . $fim;
+        }
+
+        $rsc = $this->db->dbSelect($sql, $parametros);
+
+        if ($retorno == 0) {
+            return $this->db->dbNumeroLinhas($rsc);
+        } else {
+
+            $aDados = $this->db->dbBuscaArrayAll($rsc);
+
+            for ($xxx = 0; $xxx < count($aDados); $xxx++) {
+                $aDados[$xxx]['aCategoria'] = $this->getNoticiaCategoria($aDados[$xxx]['id']);
+                $aDados[$xxx]['qtdeComentarios'] = $this->getNoticiaComentarioQuantidade($aDados[$xxx]['id']);
+            }
+    
+            return $aDados;
+        }
+    }
+
+
+    /**
+     * lista as notícias
+     *
+     * @return array
+     */
+    public function noticiasIdDetalhe($noticia_id)
+    {
+        $sql = "
+            SELECT noticia.*, usuario.nome, nl.id AS idMarcadoLeitura
+            FROM {$this->table}
+            INNER JOIN usuario ON usuario.id = noticia.usuario_id
+            LEFT JOIN noticialida AS nl ON nl.noticia_id = noticia.id
+            WHERE noticia.id = ? 
+        ";
+
+        $rsc = $this->db->dbSelect($sql, [$noticia_id]);
+
+        $aDados = $this->db->dbBuscaArray($rsc);
+
+        $aDados['aCategoria']       = $this->getNoticiaCategoria($aDados['id']);
+        $aDados['qtdeComentarios']  = $this->getNoticiaComentarioQuantidade($aDados['id']);
+
+        return $aDados;
     }
 }

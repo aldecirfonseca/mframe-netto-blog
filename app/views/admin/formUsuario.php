@@ -10,7 +10,9 @@ echo Formulario::titulo("Usuário", [
                                             "btNovo" => false,
                                             "acao" => $this->getAcao()
     ]); 
-    
+
+$dbDados = $this->getDados($dbDados);
+
 ?>
 
 <main class="container">

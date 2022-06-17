@@ -1,6 +1,7 @@
 <?php
 
 use App\Library\Formulario;
+use App\Library\Session;
 
 echo $this->loadView("comuns/cabecalho");
 echo $this->loadView("comuns/menu");
@@ -12,6 +13,8 @@ echo Formulario::titulo(
                     "btNovo" => false,
                     "acao" => $this->getAcao()
                 ]);
+
+$dbDados = $this->getDados($dbDados);
 
 ?>
 
@@ -40,10 +43,10 @@ echo Formulario::titulo(
                 <input type="hidden" name="id" value="<?= setValue("id", $dbDados) ?>">
 
                 <div class="form-group col-12 col-md-4">
+                    <a href="<?= SITEURL ?>/Categoria" class="mr-5">Voltar</a>
                     <?php if ($this->getAcao() != 'view'): ?>
                         <button type="submit" value="submit" class="button button-login">Gravar</button>
                     <?php endif; ?>
-                    <a href="<?= SITEURL ?>/Categoria" class="ml-3">Voltar</a>
                 </div>
 
             </div>

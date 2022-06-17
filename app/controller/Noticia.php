@@ -4,6 +4,7 @@ use App\Library\ControllerMain;
 use App\Library\Redirect;
 use App\Library\UploadImages;
 use App\Library\Session;
+use App\Library\Validator;
 
 class Noticia extends ControllerMain
 {
@@ -51,61 +52,92 @@ class Noticia extends ControllerMain
      */
     public function insert()
     {
-        if (!$this->validate()) {
-            $_SESSION['msgError'] = 'Preencha os compos obrigatórios.';
+        $post = $this->getPost();
+
+        // Valida dados recebidos do formulário
+        if (Validator::make($post, $this->model->validationRules)) {
+            return Redirect::page("noticia/form/insert");
         } else {
-            // pega o nome com codigo aleatorio gerado pela lib
-            $nomeRetornado = UploadImages::upload($_FILES, 'noticias');
 
-            // se não for boolean, significa que está tudo OK
-            if (!is_bool($nomeRetornado)) {
-
-                if ($this->model->insertNoticia($this->getPost(), $nomeRetornado)) {
-                    $_SESSION['msgSucesso'] = 'Notícia gravada com sucesso.';
-
-                    return Redirect::page('noticia');
-                } else {
-                    $_SESSION['msgError'] = 'Falha ao tentar gravar a notícia na base de dados.';
-                }
+            if (!isset($post['categoria'])) {
+                Session::set( 'errors' , [ "categoria" => "Selecione ao menos uma categoria para a notícia."] );
+                Session::set( 'inputs' , $post );
+                return Redirect::page("noticia/form/update/" . $post['id'] );
             } else {
-                $_SESSION['msgError'] = 'Falha ao fazer upload.';
+
+                // pega o nome com codigo aleatorio gerado pela lib
+                $nomeRetornado = UploadImages::upload($_FILES, 'noticias');
+
+                // se não for boolean, significa que está tudo OK
+                if (!is_bool($nomeRetornado)) {
+
+                    if ($this->model->insertNoticia($post, $nomeRetornado)) {
+                        return Redirect::page('noticia', ['msgSucesso' => 'Notícia gravada com sucesso.']);
+                    } else {
+                        return Redirect::page('noticia/form/insert', ['msgError' => 'Falha ao tentar gravar a notícia na base de dados.']);
+                    }
+
+                } else {
+                    Session::set( 'inputs' , $post );
+                    return Redirect::page('noticia/form/insert', ['msgError' => 'Falha ao fazer upload.']);
+                }
             }
         }
-
-        return Redirect::page('noticia/form/insert');
     }
 
+    /**
+     * update
+     *
+     * @return void
+     */
     public function update()
     {
-        if ($this->validate()) {
-            $nomeArquivo = "";
+        $post = $this->getPost();
 
-            // se foi anexada alguma imagem
-            if (!empty($_FILES['imagem']['name'])) {
-                /*envia para o método de upload o $_FILES, a pasta
-                para salvar o arquivo e o nome do arquivo antigo*/
-                $nomeArquivo = UploadImages::upload($_FILES, 'noticias', $_POST['nomeImagem']);;
+        // Valida dados recebidos do formulário
+        if (Validator::make($post, $this->model->validationRules)) {
+            return Redirect::page("noticia/form/update/" . $post['id'] );
+        } else {
+
+            if (!isset($post['categoria'])) {
+                Session::set( 'errors' , [ "categoria" => "Selecione ao menos uma categoria para a notícia."] );
+                Session::set( 'inputs' , $post );
+                return Redirect::page("noticia/form/update/" . $post['id'] );
             } else {
-                $nomeArquivo = $_POST['nomeImagem'];
-            }
 
-            if ($this->model->update($_POST, $nomeArquivo)) {
-                $_SESSION['msgSucesso'] = 'Notícia atualizada com sucesso.';
-            } else {
-                $_SESSION['msgError'] = 'Falha ao tentar atualizar a notícia na base de dados.';
-            }
+                $nomeArquivo = "";
 
-            return Redirect::Page("noticia");
+                // se foi anexada alguma imagem
+                if (!empty($_FILES['imagem']['name'])) {
+                    /*envia para o método de upload o $_FILES, a pasta
+                    para salvar o arquivo e o nome do arquivo antigo*/
+                    $nomeArquivo = UploadImages::upload($_FILES, 'noticias', $post['nomeImagem']);;
+                } else {
+                    $nomeArquivo = $post['nomeImagem'];
+                }
+
+                if ($this->model->updateNoticia($post, $nomeArquivo)) {
+                    return Redirect::Page("noticia", ['msgSucesso' => 'Notícia atualizada com sucesso.']);
+                } else {
+                    return Redirect::page("noticia/form/update/" . $post['id'], ['msgError' => 'Falha ao tentar atualizar a notícia na base de dados.'] );
+                }
+
+            }
         }
-
-        $_SESSION['msgError'] = 'Preencha os compos obrigatórios.';
-        return Redirect::Page("noticia/form/update/{$_POST['id']}");
     }
 
+    /**
+     * delete
+     *
+     * @return void
+     */
     public function delete()
     {
-        if ($this->model->delete($_POST['id'])) {
-            UploadImages::delete($_POST['nomeImagem'], 'noticias');
+        $post = $this->getPost();
+
+        if ($this->model->deleteNoticia($post['id'])) {
+            
+            UploadImages::delete($post['nomeImagem'], 'noticias');
 
             $_SESSION['msgSucesso'] = 'Notícia excluída com sucesso.';
         } else {
@@ -115,12 +147,34 @@ class Noticia extends ControllerMain
         return Redirect::Page("noticia");
     }
 
-    public function validate()
+    /**
+     * comentarioInsert
+     *
+     * @return void
+     */
+    public function comentarioInsert()
     {
-        if (isset($_POST["categoria"]) && isset($_POST['texto'])) {
-            return true;
-        }
+        $NoticiaComentarioModel = $this->loadModel("NoticiaComentario");
 
-        return false;
+        $post = $this->getPost();
+
+        if ($NoticiaComentarioModel->insert([
+            "usuario_id"    => Session::get("userCodigo"),
+            "noticia_id"    => $post['noticia_id'],
+            "texto"         => $post['texto']            
+        ])) {
+
+            return Redirect::page(
+                'Home/noticiaDetalhe/view/' . $post['categoria_id'] . '/' . $post['pagina'] . '/' .  $post['noticia_id'],
+                ['msgSucesso' => 'Comentário registrado com sucesso.']
+        );
+
+        } else {
+
+            return Redirect::page(
+                'Home/noticiaDetalhe/view/' . $post['categoria_id'] . '/' . $post['pagina'] . '/' .  $post['noticia_id'],
+                ['msgError' => 'Falha ao tentar registrar o Comentário, favor tentar mais tarde.']
+            );
+        }
     }
 }

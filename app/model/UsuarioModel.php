@@ -7,6 +7,26 @@ class UsuarioModel extends ModelMain
 {
     public $table = "usuario";
 
+    public $validationRules = [
+        "nome"  => [
+            "label" => 'Nome',
+            "rules" => 'required|min:3|max:50'
+        ],
+        "email"  => [
+            "label" => 'E-mail',
+            "rules" => 'required|email|max:100'
+        ],
+        "nivel"  => [
+            "label" => 'Nível',
+            "rules" => 'required|integer'
+        ],
+        "statusRegistro"  => [
+            "label" => 'Status',
+            "rules" => 'required|integer'
+        ]
+    ]; 
+
+
     /**
      * getLista
      *

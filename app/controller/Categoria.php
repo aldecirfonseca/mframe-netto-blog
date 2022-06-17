@@ -3,6 +3,7 @@
 use App\Library\ControllerMain;
 use App\Library\Redirect;
 use App\Library\Session;
+use App\Library\Validator;
 
 class Categoria extends ControllerMain
 {
@@ -13,6 +14,8 @@ class Categoria extends ControllerMain
 
     public function form()
     {
+        $this->loadHelper("formulario");
+
         $aDados = [
             "statusRegistro" => 1
         ];
@@ -22,7 +25,6 @@ class Categoria extends ControllerMain
             $aDados = $this->model->getById($this->dados['id']);
         }
 
-        $this->loadHelper("formulario");
         $this->loadView("admin/formCategoria", $aDados);
     }
 
@@ -34,17 +36,26 @@ class Categoria extends ControllerMain
     public function insert()
     {
         $post = $this->getPost();
-        
-        if ($this->model->insert(            [
-            "descricao" => $post['descricao'],
-            "statusRegistro" => $post['statusRegistro']
-        ])) {
-            Session::set("msgSucesso", "Registro inserido com sucesso.");
-        } else {
-            Session::set('msgError', 'Falha ao tentar inserir o registro na base de dados.');
-        }
 
-        Redirect::page("categoria");
+        // Valida dados recebidos do formulário
+        if (Validator::make($post, $this->model->validationRules)) {
+            return Redirect::page("categoria/form/insert");
+        } else {
+
+            if ($this->model->insert(            [
+                "descricao" => $post['descricao'],
+                "statusRegistro" => $post['statusRegistro']
+            ])) {
+                Session::set("msgSucesso", "Registro inserido com sucesso.");
+                Session::destroy("aMenuCategorias");
+                $this->model->menuCategoria();
+            } else {
+                Session::set('msgError', 'Falha ao tentar inserir o registro na base de dados.');
+            }
+    
+            return Redirect::page("categoria");
+        }
+        
     }
 
     /**
@@ -56,19 +67,27 @@ class Categoria extends ControllerMain
     {
         $post = $this->getPost();
 
-        if ($this->model->update(
-                $post["id"],
-                [
-                "descricao" => $post["descricao"],
-                "statusRegistro" => $post['statusRegistro']
-                ]
-        )) {
-            Session::set("msgSucesso", "Registro atualizado com sucesso.");
+        // Valida dados recebidos do formulário
+        if (Validator::make($post, $this->model->validationRules)) {
+            return Redirect::page("categoria/form/update");
         } else {
-            Session::set('msgError', 'Falha ao tentar atualizar o registro na base de dados.');
-        }
 
-        Redirect::page("categoria");
+            if ($this->model->update(
+                    $post["id"],
+                    [
+                    "descricao" => $post["descricao"],
+                    "statusRegistro" => $post['statusRegistro']
+                    ]
+            )) {
+                Session::set("msgSucesso", "Registro atualizado com sucesso.");
+                Session::destroy("aMenuCategorias");
+                $this->model->menuCategoria();
+            } else {
+                Session::set('msgError', 'Falha ao tentar atualizar o registro na base de dados.');
+            }
+
+            return Redirect::page("categoria");
+        }
     }
 
     /**
@@ -82,6 +101,8 @@ class Categoria extends ControllerMain
 
         if ($this->model->delete($post['id'])) {
             Session::set("msgSucesso", "Registro excluído com sucesso.");
+            Session::destroy("aMenuCategorias");
+            $this->model->menuCategoria();
         } else {
             Session::set('msgError', 'Falha ao tentar excluir o registro na base de dados.');
         }

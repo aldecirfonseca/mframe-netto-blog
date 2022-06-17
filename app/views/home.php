@@ -15,189 +15,133 @@ echo $this->loadView("comuns/menu");
                 <div class="col-lg-8">
                     <div class="blog_left_sidebar">
 
-                        <article class="row blog_item">
-                            <div class="col-md-3">
-                                <div class="blog_info text-right">
-                                    <div class="post_tag">
-                                        <a class="active"  href="#">Esporte</a>
-                                    </div>
-                                    <ul class="blog_meta list">
+                        <?php
 
-                                        <li>
-                                            <a href="#">Marcar como lida
-                                                <i class="fa fa-user" aria-hidden="true"></i>
-                                            </a>
+                            if (count($dbDados['aNoticia']) > 0) {
 
-                                        </li>
+                                foreach ($dbDados['aNoticia'] as $noticia) {
 
-                                        <li>
-                                            <a href="#">1 Agosto, 2021
-                                                <i class="fa fa-calendar" aria-hidden="true"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">1.2M Visualizações
-                                                <i class="fa fa-eye-slash" aria-hidden="true"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">06 Comentários
-                                                <i class="fa fa-comments" aria-hidden="true"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="blog_post">
-                                    <img src="<?= SITEURL ?>assets/img/blog/m-blog-ciclismo-de-estrada.png" alt="">
-                                    <div class="blog_details">
-                                        <a href="index.php?view=noticia-detalhe">
-                                            <h2>Olimpíadas: No ciclismo de estrada, Equador conquista 2ª medalha de sua história nos Jogos Olímpicos</h2>
-                                        </a>
-                                        <p>
-                                            Richard Carapaz fez história na manhã deste sábado! O equatoriano venceu o ciclismo de 
-                                            estrada das Olimpíadas de Tóquio e conquistou a segunda medalha de ouro da história do 
-                                            país nos Jogos Olímpicos. Carapaz teve um tempo de 6:05:26 para completar os 234 
-                                            quilômetros da prova... 
-                                        </p>
-                                        <a href="index.php?view=noticia-detalhe" class="button button-blog">Veja mais</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
+                                    $categoria = '';
 
-                        <article class="row blog_item">
-                            <div class="col-md-3">
-                                <div class="blog_info text-right">
-                                    <div class="post_tag">
-                                        <a class="active" href="#">Tecnologia,</a>
-                                        <a class="active" href="#">Legislação</a>
-                                    </div>
-                                    <ul class="blog_meta list">
-                                        <li>
-                                            <a href="#">Marcar como lida
-                                                <i class="lnr lnr-user"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">1 Agosto, 2021
-                                                <i class="lnr lnr-calendar-full"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">1.2M Visualizações
-                                                <i class="lnr lnr-eye"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">06 Comentários
-                                                <i class="lnr lnr-bubble"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="blog_post">
-                                    <img src="<?= SITEURL ?>assets/img/blog/m-blog-lgpd.png" alt="">
-                                    <div class="blog_details">
-                                        <a href="index.php?view=noticia-detalhe">
-                                            <h2>Sanções da LGPD começam a valer e preocupam empresas que não estão prontas</h2>
-                                        </a>
-                                        <p>
-                                            As punições previstas na Lei Geral de Proteção de Dados (LGPD) começam a valer a 
-                                            partir de domingo (01/08). O órgão responsável por aplicar as sanções previstas 
-                                            na legislação — que foi aprovada em 2018 e que passou a valer em setembro de 2020...
-                                        </p>
-                                        <a href="index.php?view=noticia-detalhe" class="button button-blog">Veja mais</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
+                                    foreach ($noticia['aCategoria'] as $valueCategoria) {
+                                        $categoria .= ($categoria != "" ? ", " : "" ) . '<a class="active" href="' . SITEURL . 'Home/index/filtra/' . $valueCategoria['categoria_id'] . '">' . $valueCategoria['descricao'] . '</a>';
+                                    }
 
-                        <article class="row blog_item">
-                            <div class="col-md-3">
-                                <div class="blog_info text-right">
-                                    <div class="post_tag">
-                                        <a class="active" href="#">Esporte</a>
-                                    </div>
-                                    <ul class="blog_meta list">
-                                        <li>
-                                            <a href="#">Marcar como lida
-                                                <i class="lnr lnr-user"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">1 Agosto, 2021
-                                                <i class="lnr lnr-calendar-full"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">1.2M Visualizações
-                                                <i class="lnr lnr-eye"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">06 Comentários
-                                                <i class="lnr lnr-bubble"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="blog_post">
-                                    <img src="<?= SITEURL ?>assets/img/blog/m-blog-rebecaandrade.jpeg" alt="">
-                                    <div class="blog_details">
-                                        <a href="index.php?view=noticia-detalhe">
-                                            <h2>Dia quase perfeito coloca Brasil acima do recorde histórico na previsão de medalhas</h2>
-                                        </a>
-                                        <p>
-                                            Após nove dias de competições, o Brasil está com dois ouros, três pratas e cinco bronzes 
-                                            nas Olimpíadas de Tóquio, totalizando dez medalhas. Além disso, o país já tem outras 
-                                            duas medalhas garantidas com o boxe, mas ainda não se sabe se ouro, prata ou bronze. 
-                                            Então já são 12 pódios certos...
-                                        </p>
-                                        <a class="button button-blog" href="index.php?view=noticia-detalhe">Veja mais</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
+                                    ?>
+                                    <article class="row blog_item">
 
-                        <nav class="blog-pagination justify-content-center d-flex">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a href="#" class="page-link" aria-label="Previous">
-                                        <span aria-hidden="true">
-                                            <span class="lnr lnr-chevron-left"></span>
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" class="page-link">01</a>
-                                </li>
-                                <li class="page-item active">
-                                    <a href="#" class="page-link">02</a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" class="page-link">03</a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" class="page-link">04</a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" class="page-link">09</a>
-                                </li>
-                                <li class="page-item">
-                                    <a href="#" class="page-link" aria-label="Next">
-                                        <span aria-hidden="true">
-                                            <span class="lnr lnr-chevron-right"></span>
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                                        <div class="col-md-3">
+                                            <div class="blog_info text-right">
+                                                <div class="post_tag">
+                                                    <?= $categoria ?>
+                                                </div>
+                                                <ul class="blog_meta list">
+
+                                                    <?php 
+                                                        if (Session::get("userCodigo") != "") {
+
+                                                            if (is_null($noticia['idMarcadoLeitura'])) {
+                                                                ?>
+                                                                <li>
+                                                                    <a href="<?= SITEURL ?>Home/noticiaLida/Marcar/<?= $dbDados['aFiltro']['categoria_id']. '/' . $dbDados['aFiltro']['pagina'] . '/' . $noticia['id'] . '/' . $noticia['id'] ?>/h">Marcar como lida
+                                                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                                                    </a>
+                                                                </li>
+                                                                <?php
+                                                            } else {
+                                                                ?>
+                                                                <li>
+                                                                    <a href="<?= SITEURL ?>Home/noticiaLida/Desmarcar/<?= $dbDados['aFiltro']['categoria_id']. '/' . $dbDados['aFiltro']['pagina'] . '/' .  $noticia['id'] . '/' . $noticia['idMarcadoLeitura'] ?>/h" class="text-success">Desmarcar Leitura
+                                                                        <i class="fa fa-user text-success" aria-hidden="true"></i>
+                                                                    </a>
+                                                                </li>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                            <?php 
+                                                        } 
+                                                    ?>
+
+                                                    <li class="mt-4">
+                                                        <?= date("d", strtotime($noticia['created_at'])) . " " . mesExtenso(date("m", strtotime($noticia['created_at']))) . ", " . date("Y", strtotime($noticia['created_at'])) ?>
+                                                        &nbsp;&nbsp;<i class="fa fa-calendar text-dark" aria-hidden="true"></i>
+                                                    </li>
+                                                    <li class="mt-4">
+                                                        <?= $noticia['qtdVisualizacao'] . '  ' . ($noticia['qtdVisualizacao'] > 1 ? 'Visualizações' : 'Visualização') ?> 
+                                                        &nbsp;&nbsp;<i class="fa fa-eye-slash text-dark" aria-hidden="true"></i>
+                                                    </li>
+                                                    <li class="mt-4">
+                                                        <?= $noticia['qtdeComentarios'] . '  ' . ($noticia['qtdeComentarios'] > 1 ? "Comentários": "Comentário") ?>
+                                                        &nbsp;&nbsp;<i class="fa fa-comments text-dark" aria-hidden="true"></i>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="col-md-9">
+                                            <div class="blog_post">
+                                                <div class="blog_details">
+                                                    <a href="index.php?view=noticia-detalhe">
+                                                        <h2><?= $noticia['titulo'] ?></h2>
+                                                    </a>
+                                                    <img src="<?= SITEURL ?>uploads/noticias/<?= $noticia['imagem'] ?>" alt="">
+                                                    <p>
+                                                        <?= mb_strimwidth($noticia['texto'], 0 , 300, " ...") ?>
+                                                    </p>
+                                                    <a href="<?= SITEURL ?>Home/noticiaDetalhe/view/<?= $dbDados['aFiltro']['categoria_id']. '/' . $dbDados['aFiltro']['pagina'] . '/' . $noticia['id'] ?>" class="button button-blog">Veja mais</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </article>
+
+                                    <?php
+                                } 
+
+                                if ($dbDados['aFiltro']['totalPaginas'] > 1) {
+                                    ?>
+                                    <nav class="blog-pagination justify-content-center d-flex">
+                                            <ul class="pagination">
+
+                                                <?php if ($dbDados['aFiltro']['pagina'] > 1): ?>
+                                                    <li class="page-item">
+                                                        <a href="<?= SITEURL?>Home/index/pagina/<?= $dbDados['aFiltro']['categoria_id'] . '/' . ($dbDados['aFiltro']['pagina'] - 1) ?>" class="page-link">Anterior</a>
+                                                    </li>
+                                                <?php endif; ?>
+
+                                                <?php for ($xxx = 1; $xxx <= $dbDados['aFiltro']['totalPaginas']; $xxx++): ?>
+
+                                                    <li class="page-item <?= ($xxx == $dbDados['aFiltro']['pagina'] ? 'active' : '') ?>">
+                                                        <a href="<?= SITEURL?>Home/index/pagina/<?= $dbDados['aFiltro']['categoria_id'] . '/' . $xxx ?>" class="page-link"><?= $xxx ?></a>
+                                                    </li>
+
+                                                <?php endfor; ?>
+
+                                                <?php if (($dbDados['aFiltro']['totalPaginas'] > 1) and ($dbDados['aFiltro']['pagina'] < $dbDados['aFiltro']['totalPaginas'])): ?>
+                                                    <li class="page-item">
+                                                        <a href="<?= SITEURL?>Home/index/pagina/<?= $dbDados['aFiltro']['categoria_id'] . '/' . ($dbDados['aFiltro']['pagina'] + 1) ?>" class="page-link">Próxima</a>
+                                                    </li>
+                                                <?php endif; ?>
+
+                                            </ul>
+                                        </nav>
+
+                                    <?php
+                                }
+
+                            } else {
+                                ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>Não foram localizadas Notícias para a Categoria selecionada.</strong>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <?php
+                            }
+                        
+                        ?>
+
                     </div>
                 </div>
                 

@@ -6,6 +6,7 @@ class ModelMain
 {
     protected $db;
     public $table;
+    public $validationRules;
     
     /**
      * construct
@@ -13,6 +14,7 @@ class ModelMain
     public function __construct()
     {
         $this->db = new Database();
+        $validationRules = [];
     }
 
     /**

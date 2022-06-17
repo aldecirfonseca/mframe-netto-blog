@@ -7,7 +7,7 @@ class ControllerMain
     public function __construct($dados)
     { 
         $this->dados = $dados;
-
+        
         // Verificando se o controller exige autenticação
         if (!in_array($dados['controller'], CONTROLLER_SEM_AUTENTICACAO)) {
             if (Session::get('userCodigo') == "") {         // Usuário não autenticado
@@ -121,7 +121,28 @@ class ControllerMain
      */
     public function getId()
     {
-        $parametros = explode("/", $this->dados['get']['parametros']);
-        return isset($parametros[3]) ? $parametros[3] : null;
+        if (isset($this->dados['get']['parametros'])) {
+
+            $parametros = explode("/", $this->dados['get']['parametros']);
+            return isset($parametros[3]) ? $parametros[3] : null;
+
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
+     * getDados
+     *
+     * @return void
+     */
+    public function getDados($dbDados) 
+    {
+        if (Session::get("inputs") != "") {
+            return Session::getDestroy("inputs");
+        } else {
+            return $dbDados;
+        }        
     }
 }

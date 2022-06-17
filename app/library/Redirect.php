@@ -18,10 +18,7 @@ class Redirect
                 Session::set($key, $value);
             }
         }
-        ?>
-        <script language="JavaScript">
-            window.location="<?= SITEURL . $caminho ?>";
-        </script>
-        <?php
+
+        return header("Location: " . SITEURL . $caminho);
     }
 }

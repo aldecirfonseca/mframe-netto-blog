@@ -17,8 +17,8 @@
                                 <h4 class="footer_title">Links rápidos</h4>
                                 <ul class="list">
                                     <li><a href="<?= SITEURL ?>">Home</a></li>
-                                    <li><a href="<?= SITEURL ?>sobre-o-autor">Sobre o Autor</a></li>
-                                    <li><a href="<?= SITEURL ?>contato">Contato</a></li>
+                                    <li><a href="<?= SITEURL ?>Home/sobreoAutor">Sobre o Autor</a></li>
+                                    <li><a href="<?= SITEURL ?>Home/contato">Contato</a></li>
                                 </ul>
                             </div>
                         </div>

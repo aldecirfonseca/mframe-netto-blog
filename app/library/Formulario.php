@@ -31,7 +31,7 @@ class Formulario
 
         if (!isset($parametro['btNovo'])) {
             $textoBtnNovo = '
-                            <a href="'. SITEURL . '/' . $parametro['controller'] .'/form/insert" class="btn btn-secondary btn-sm btn-icons-crud" title="Novo">
+                            <a href="'. SITEURL . $parametro['controller'] .'/form/insert" class="btn btn-secondary btn-sm btn-icons-crud" title="Novo">
                                 <i class="fa fa-plus" area-hidden="true"></i>
                             </a>
             ';
@@ -53,7 +53,7 @@ class Formulario
                                     </div>
                                 </div>';
 
-                    $texto .= Formulario::exibeMsgError() . Formulario::exibeMsgSucesso();
+                    $texto .= Formulario::exibeMsgError() . Formulario::exibeMsgSucesso() . Formulario::exibeMsgErrorValidacao();
 
                     $texto .= '
                             </div>
@@ -78,6 +78,38 @@ class Formulario
             $texto .= '
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>'. Session::getDestroy('msgError') . '</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>';
+
+        }
+
+        return $texto;
+    }
+
+    /**
+     * exibeMsgError
+     *
+     * @return string
+     */
+    public static function exibeMsgErrorValidacao() 
+    {
+        $texto = "";
+
+        if (Session::get('errors') != "") {
+
+            $aErrors = Session::getDestroy('errors');
+            $aErrors = (is_null($aErrors) ? [] : $aErrors);
+            $textoError = "";
+
+            foreach ($aErrors as $value) {
+                $textoError .= ($textoError != "" ? "<br />" : "") . $value;
+            }
+
+            $texto .= '
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>'. $textoError . '</strong>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
