@@ -16,7 +16,7 @@ class Login extends ControllerMain
         $superUser = $UsuarioModel->criaSuperUser();
 
         if ($superUser > 0) {          // 1=Falhou criação do super user; 2=sucesso na criação do super user
-            Redirect::page("home/login");
+            return Redirect::page("home/login");
         }
 
         // Buscar usuário na base de dados
@@ -28,13 +28,13 @@ class Login extends ControllerMain
             // validar a senha            
             if (!password_verify(trim($post["senha"]), $aUsuario['senha']) ) {
                 Session::set("msgError", 'Usuário e ou senha inválido.');
-                Redirect::page("home/login");
+                return  Redirect::page("Home/login");
             }
             
             // validar o status do usuário            
             if ($aUsuario['statusRegistro'] == 2 ) {
                 Session::set("msgError", "Usuário Inativo, não será possível prosseguir !");
-                Redirect::page("home/login");
+                return Redirect::page("Home/login");
             }
 
             //  Criar flag's de usuário logado no sistema
@@ -45,12 +45,12 @@ class Login extends ControllerMain
             Session::set("userNivel", $aUsuario['nivel']);
             
             // Direcionar o usuário para página home
-            Redirect::page("home/homeAdmin");
+            return Redirect::page("Home/homeAdmin");
             //
 
         } else {
             Session::set('msgError', 'Usuário e ou senha inválido.');
-            Redirect::page("home/login");
+            return Redirect::page("Home/login");
         }
     }
 
@@ -66,7 +66,7 @@ class Login extends ControllerMain
         Session::destroy('userEmail');
         Session::destroy('userNivel');
         
-        Redirect::Page("home");
+        return Redirect::Page("Home");
     }
 
     /**
@@ -92,7 +92,7 @@ class Login extends ControllerMain
 
         if (!$user) {
 
-            Redirect::page("Login/solicitaRecuperacaoSenha", [
+            return Redirect::page("Login/solicitaRecuperacaoSenha", [
                 "msgErros" => "Não foi possivel localizar o e-mail na base de dados !"
             ]);
 
@@ -135,18 +135,18 @@ class Login extends ControllerMain
                 ]);
 
                 if ($resIns) {
-                    Redirect::page("Home/Login", [
+                    return Redirect::page("Home/Login", [
                         "msgSucesso" => "Link para recuperação da senha enviado com sucesso! Verifique seu e-mail."
                     ]);   
                 } else {
-                    Redirect::page("Login/solicitaRecuperacaoSenha", [
+                    return Redirect::page("Login/solicitaRecuperacaoSenha", [
                         "msgErros" => "Ocorreu uma falha ao resgistrar o link de recuperação da senha, favor descartar o e-mail recibido e solictar no link mais tarde."
                     ]);   
                 }
 
             } else {
 
-                Redirect::page("Login/solicitaRecuperacaoSenha", [
+                return Redirect::page("Login/solicitaRecuperacaoSenha", [
                     "msgErros" => "Não foi possivel enviar o e-mail, favor tentar mais tarde."
                 ]);      
 
@@ -198,7 +198,7 @@ class Login extends ControllerMain
                         // Desativa chave
                         $upd = $usuarioRecuperaSenhaModel->desativaChave($userChave['id']);
 
-                        Redirect::page("Login/solicitaRecuperacaoSenha", [
+                        return Redirect::page("Login/solicitaRecuperacaoSenha", [
                             "msgErros" => "Chave de recuperação da senha inválida."
                         ]); 
                     }
@@ -208,7 +208,7 @@ class Login extends ControllerMain
                     // Desativa chave
                     $upd = $usuarioRecuperaSenhaModel->desativaChave($userChave['id']);
 
-                    Redirect::page("Login/solicitaRecuperacaoSenha", [
+                    return Redirect::page("Login/solicitaRecuperacaoSenha", [
                         "msgErros" => "Chave de recuperação da senha inválida."
                     ]); 
 
@@ -258,7 +258,7 @@ class Login extends ControllerMain
                     //
 
                     Session::destroy("msgErros");
-                    Redirect::page("Home/Login", [
+                    return Redirect::page("Home/Login", [
                         "msgSucesso"    => "Senha alterada com sucesso !"
                     ]);  
 

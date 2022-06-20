@@ -7,11 +7,37 @@ use App\Library\Validator;
 
 class Categoria extends ControllerMain
 {
+    /**
+     * construct
+     *
+     * @param mixed $dados 
+     */
+    public function __construct($dados)
+    {
+        $this->auxiliarConstruct($dados);
+
+        // Somente pode ser acessado por usuários adminsitradores
+        if (!$this->getAdministrador()) {
+            return Redirect::page("Home");
+        }
+    }
+
+    /**
+     * index
+     *
+     * @return void
+     */
     public function index()
     {
+        //$this->getAdministrador();
         $this->loadView("admin/listaCategoria", $this->model->lista());
     }
 
+    /**
+     * form
+     *
+     * @return void
+     */
     public function form()
     {
         $this->loadHelper("formulario");

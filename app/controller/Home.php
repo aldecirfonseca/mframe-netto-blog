@@ -20,7 +20,7 @@ class Home extends ControllerMain
             "totalPaginas"  => 1
         ];
 
-        // Carrega menua Categorias
+        // Carrega menu Categorias
         $CategoriaModel->menuCategoria();
         //
 
@@ -104,9 +104,9 @@ class Home extends ControllerMain
         );
 
         if ($lRetMail) {
-            Redirect::page("Home/contato", ["msgSucesso" => "E-mail de contato enviado com sucesso, por favor aguarde que em breve retornaremos."]);
+            return Redirect::page("Home/contato", ["msgSucesso" => "E-mail de contato enviado com sucesso, por favor aguarde que em breve retornaremos."]);
         } else {
-            Redirect::page("Home/contato", ["msgErros" => "Error ao tentar enviar o e-mail"]);
+            return Redirect::page("Home/contato", ["msgErros" => "Error ao tentar enviar o e-mail"]);
         }
     }
 

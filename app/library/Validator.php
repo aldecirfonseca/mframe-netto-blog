@@ -74,7 +74,7 @@ class Validator
             }
         }
         
-        if ($errors){
+        if ($errors) {
             Session::set( 'errors' , $errors );
             Session::set( 'inputs' , $data );
             return true;

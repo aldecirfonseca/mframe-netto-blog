@@ -14,6 +14,11 @@ class Usuario extends ControllerMain
      */
     public function index()
     {
+        // Somente pode ser acessado por usuários adminsitradores
+        if (!$this->getAdministrador()) {
+            return Redirect::page("Home");
+        }
+
         $this->loadView("admin/listaUsuario", $this->model->getLista());
     }
 
@@ -24,6 +29,11 @@ class Usuario extends ControllerMain
      */
     public function form()
     {
+        // Somente pode ser acessado por usuários adminsitradores
+        if (!$this->getAdministrador()) {
+            return Redirect::page("Home");
+        }
+        
         $dbDados = [];
 
         if ( $this->getAcao() != 'new') {
@@ -55,9 +65,9 @@ class Usuario extends ControllerMain
                 "email"             => $post['email'],
                 "senha"             => password_hash($post['senha'], PASSWORD_DEFAULT)
             ])) {
-                Redirect::page("Usuario", ["msgSucesso" => "Usuário inserido com sucesso !"]);
+                return Redirect::page("Usuario", ["msgSucesso" => "Usuário inserido com sucesso !"]);
             } else {
-                Redirect::page("Usuario", ["msgErros" => "Falha na inserção dos dados do Usuário !"]);
+                return Redirect::page("Usuario", ["msgErros" => "Falha na inserção dos dados do Usuário !"]);
             }
         }
     }
@@ -83,9 +93,9 @@ class Usuario extends ControllerMain
                 "nivel"             => $post['nivel'],
                 "email"             => $post['email']
             ])) {
-                Redirect::page("Usuario", ["msgSucesso" => "Usuário alterado com sucesso !"]);
+                return Redirect::page("Usuario", ["msgSucesso" => "Usuário alterado com sucesso !"]);
             } else {
-                Redirect::page("Usuario", ["msgErros" => "Falha na alteração dos dados do Usuário !"]);
+                return Redirect::page("Usuario", ["msgErros" => "Falha na alteração dos dados do Usuário !"]);
             } 
         }    
     }
@@ -100,9 +110,9 @@ class Usuario extends ControllerMain
         $post = $this->getPost();
 
         if ($this->model->delete([ "id" => $post['id']])) {
-            Redirect::page("Usuario", ["msgSucesso" => "Usuário excluído com sucesso !"]);
+            return Redirect::page("Usuario", ["msgSucesso" => "Usuário excluído com sucesso !"]);
         } else {
-            Redirect::page("Usuario", ["msgErros" => "Falha na exclusão do Usuário !"]);
+            return Redirect::page("Usuario", ["msgErros" => "Falha na exclusão do Usuário !"]);
         }   
     }
 
@@ -135,28 +145,28 @@ class Usuario extends ControllerMain
                     $lUpdate = $this->model->update($post['id'], ['senha' => password_hash($post["novaSenha"], PASSWORD_DEFAULT)]);
 
                     if ($lUpdate) {
-                        Redirect::page("Usuario/trocaSenha", [
+                        return Redirect::page("Usuario/trocaSenha", [
                             "msgSucesso"    => "Senha alterada com sucesso !"
                         ]);  
                     } else {
-                        Redirect::page("Usuario/trocaSenha", [
+                        return Redirect::page("Usuario/trocaSenha", [
                             "msgErros"    => "Falha na atualização da nova senha !"
                         ]);    
                     }
 
                 } else {
-                    Redirect::page("Usuario/trocaSenha", [
+                    return Redirect::page("Usuario/trocaSenha", [
                         "msgErros"    => "Nova senha e conferência da senha estão divergentes !"
                     ]);                  
                 }
 
             } else {
-                Redirect::page("Usuario/trocaSenha", [
+                return Redirect::page("Usuario/trocaSenha", [
                     "msgErros"    => "Senha atual informada não confere!"
                 ]);               
             }
         } else {
-            Redirect::page("Usuario/trocaSenha", [
+            return Redirect::page("Usuario/trocaSenha", [
                 "msgErros"    => "Usuário inválido !"
             ]);   
         }
@@ -187,12 +197,12 @@ class Usuario extends ControllerMain
             Session::set("userLogin", $post['nome']);
             Session::set("userEmail", $post['email']);
 
-            Redirect::page("Usuario/perfil", [
+            return Redirect::page("Usuario/perfil", [
                 "msgSucesso"    => "Perfil atualizado com sucesso!"
             ]);  
 
         } else {
-            Redirect::page("Usuario/perfil", [
+            return Redirect::page("Usuario/perfil", [
                 "msgErros"    => "Falha na atualização do se perfil, favor tentar novamente mais tarde!"
             ]);  
         }

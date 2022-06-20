@@ -81,7 +81,7 @@ echo $this->loadView("comuns/menu");
                                         <div class="col-md-9">
                                             <div class="blog_post">
                                                 <div class="blog_details">
-                                                    <a href="index.php?view=noticia-detalhe">
+                                                    <a href="<?= SITEURL ?>Home/noticiaDetalhe/view/<?= $dbDados['aFiltro']['categoria_id']. '/' . $dbDados['aFiltro']['pagina'] . '/' . $noticia['id'] ?>">
                                                         <h2><?= $noticia['titulo'] ?></h2>
                                                     </a>
                                                     <img src="<?= SITEURL ?>uploads/noticias/<?= $noticia['imagem'] ?>" alt="">

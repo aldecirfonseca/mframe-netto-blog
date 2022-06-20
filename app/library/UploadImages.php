@@ -30,10 +30,10 @@ class UploadImages
             if ($value['error'] == 0) {
                 // Verifica o tipo de arquivo enviado
                 if (array_search($value['type'], $tiposPermitidos) === false) {
-                    $_SESSION["msgError"] = 'O tipo de arquivo enviado é inválido ! (' . $arqName . ')';
+                    Session::set("msgError", 'O tipo de arquivo enviado é inválido ! (' . $arqName . ')');
                     return false;
                 } else if ($value['size'] > $tamanhoPermitido) {    // Verifica o tamanho do arquivo enviado
-                    $_SESSION["msgError"] = 'O tamanho do arquivo enviado é maior que o limite ! (' . $arqName . ')';
+                    Session::set("msgError", 'O tamanho do arquivo enviado é maior que o limite ! (' . $arqName . ')');
                     return false;
                 } else {
                     if (!empty($nomeImagem)) {

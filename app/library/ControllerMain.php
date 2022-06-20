@@ -6,6 +6,11 @@ class ControllerMain
 {
     public function __construct($dados)
     { 
+        $this->auxiliarConstruct($dados);
+    }
+
+    public function auxiliarConstruct($dados)
+    {
         $this->dados = $dados;
         
         // Verificando se o controller exige autenticação
@@ -144,5 +149,21 @@ class ControllerMain
         } else {
             return $dbDados;
         }        
+    }
+
+    /**
+     * getAdministrador
+     *
+     * @return boolean
+     */
+    public function getAdministrador()
+    {
+        if (Session::get("userCodigo") != "") {
+            if (Session::get("userNivel") == 1) {
+                return true;
+            }            
+        }
+
+        return false;
     }
 }

@@ -11,6 +11,21 @@ class Noticia extends ControllerMain
     public $title = 'Notícia';
 
     /**
+     * construct
+     *
+     * @param mixed $dados 
+     */
+    public function __construct($dados)
+    {
+        $this->auxiliarConstruct($dados);
+
+        // Somente pode ser acessado por usuários adminsitradores
+        if (!$this->getAdministrador()) {
+            return Redirect::page("Home");
+        }
+    }
+
+    /**
      * index
      *
      * @return void
