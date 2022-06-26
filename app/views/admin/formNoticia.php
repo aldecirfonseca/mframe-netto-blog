@@ -97,13 +97,32 @@ $dbDados['noticia'] = $this->getDados($dbDados['noticia']);
 
             </div>
 
-            <div class="form-group col-12 col-md-4">
+            <div class="form-group col-12">
                 <a href="<?= SITEURL ?>noticia" class="mr-5">Voltar</a>
-                <?php if ($this->getAcao() != 'view') : ?>
-                <button class="button button-login" type="submit" value="submit">
-                    <i class="fa fa-save" area-hidden="true"></i> Gravar
-                </button>
-                <?php endif; ?>
+                <?php 
+                    if ($this->getAcao() == 'delete') {
+                        if ($dbDados['temComentario'] > 0) {
+                            ?>
+                            <div class="alert alert-danger" role="alert">
+                                Notícia possuí comentários, não será possível realizar a exclusão da mesma.
+                            </div>
+                            <?php      
+                        } else {
+                            ?>
+                            <button class="button button-login" type="submit" value="submit">
+                                <i class="fa fa-save" area-hidden="true"></i> Gravar
+                            </button>
+                            <?php      
+                        }
+
+                    } elseif (($this->getAcao() == 'insert') || ($this->getAcao() == 'update')) {
+                        ?>
+                        <button class="button button-login" type="submit" value="submit">
+                            <i class="fa fa-save" area-hidden="true"></i> Gravar
+                        </button>
+                        <?php                     
+                    }
+                    ?>
             </div>
         </form>
     </section>

@@ -50,12 +50,25 @@ class Noticia extends ControllerMain
         // load do model Categoria
         $categoria = $this->loadModel('Categoria');
 
+        $aDados = [];
+        $temComentario = 0;
+
+        // recuperar os dados do $id
+        if ($this->getAcao() != "insert") {
+            $aDados = $this->model->getById($this->getId());
+
+            if ($this->getAcao() == "delete") {
+                $temComentario = $this->model->getNoticiaComentarioQuantidade($this->getId());
+            }
+        }
+
         $this->loadView(
             'admin/formNoticia',
             [
                 'categoria' => $categoria->lista(),
-                'noticia' => $this->model->getById($this->getId()),
-                'noticiaCategoria' => $this->model->getNoticiaCategoria($this->getId())
+                'noticia' => $aDados,
+                'noticiaCategoria' => $this->model->getNoticiaCategoria($this->getId()),
+                "temComentario" => $temComentario
             ]
         );
     }

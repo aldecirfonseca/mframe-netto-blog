@@ -19,4 +19,4 @@ define("DB_BDADOS"  , 'nettoblog');
 define("CONTROLLERBASE", "Home");
 
 // Controllers não autenticados
-define("CONTROLLER_SEM_AUTENTICACAO", ['Home', 'Login']); 
+define("CONTROLLER_SEM_AUTENTICACAO", ['Home', 'Login', 'Erros']); 
