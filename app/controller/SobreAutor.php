@@ -65,7 +65,7 @@ class SobreAutor extends ControllerMain
 
         // Valida dados recebidos do formulário
         if (Validator::make($post, $this->model->validationRules)) {
-            return Redirect::page("SobreAutor/form/update");
+            return Redirect::page("SobreAutor/form/insert");
         } else {
 
             // pega o nome com codigo aleatorio gerado pela lib
@@ -139,12 +139,11 @@ class SobreAutor extends ControllerMain
                     "foto"              => $nomeArquivo
                     ]
             )) {
-                Session::set("msgSucesso", "Registro atualizado com sucesso.");
+                return Redirect::page("SobreAutor", ["msgSucesso" => "Registro atualizado com sucesso."]);
             } else {
-                Session::set('msgError', 'Falha ao tentar atualizar o registro na base de dados.');
+                Session::set('inputs' , $post);
+                return Redirect::page("SobreAutor/form/update", ['msgError' => 'Falha ao tentar atualizar o registro na base de dados.']);
             }
-
-            return Redirect::page("SobreAutor");
         }
     }
 

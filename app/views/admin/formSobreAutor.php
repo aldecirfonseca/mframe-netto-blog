@@ -46,7 +46,7 @@ $dbDados = $this->getDados($dbDados);
 
                 <div class="form-group col-12 mb-4">
                     <label for="texto" class="form-label">Texto *</label>
-                    <textarea name="texto" id="texto" class="form-control" required><?= setValue('texto', $dbDados) ?></textarea>
+                    <textarea name="texto" id="texto" class="form-control"><?= setValue('texto', $dbDados) ?></textarea>
                 </div>
 
                 <div class="form-group col-12 col-md-6 mb-4">
