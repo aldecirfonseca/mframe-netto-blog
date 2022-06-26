@@ -167,9 +167,9 @@ class Noticia extends ControllerMain
             
             UploadImages::delete($post['nomeImagem'], 'noticias');
 
-            $_SESSION['msgSucesso'] = 'Notícia excluída com sucesso.';
+            Session::set('msgSucesso', 'Notícia excluída com sucesso.');
         } else {
-            $_SESSION['msgError'] = 'Falha ao tentar excluir a notícia na base de dados.';
+            Session::set('msgError', 'Falha ao tentar excluir a notícia na base de dados.');
         }
 
         return Redirect::Page("noticia");

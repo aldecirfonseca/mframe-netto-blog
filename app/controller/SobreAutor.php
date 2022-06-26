@@ -157,6 +157,7 @@ class SobreAutor extends ControllerMain
         $post = $this->getPost();
 
         if ($this->model->delete($post['id'])) {
+            UploadImages::delete($post['foto'], 'autor');
             Session::set("msgSucesso", "Registro excluído com sucesso.");
         } else {
             Session::set('msgError', 'Falha ao tentar excluir o registro na base de dados.');
